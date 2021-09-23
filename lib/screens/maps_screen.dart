@@ -26,7 +26,7 @@ class _MapsScreenState extends State<MapsScreen> {
 // this is the key object - the PolylinePoints
 // which generates every polyline between start and finish
   PolylinePoints polylinePoints = PolylinePoints();
-  String googleAPIKey = "AIzaSyA0vhp9tdCzUiwZTrn8OiPvpboxkYwLkPI";
+  String googleAPIKey = "GOOGLE_API";
 // for my custom icons
   late BitmapDescriptor sourceIcon;
   late BitmapDescriptor destinationIcon;

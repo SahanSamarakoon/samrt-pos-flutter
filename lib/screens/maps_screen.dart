@@ -27,7 +27,7 @@ class _MapsScreenState extends State<MapsScreen> {
   Set<Polyline> _polylines = {};
   List<LatLng> polylineCoordinates = [];
   PolylinePoints polylinePoints = PolylinePoints();
-  String googleAPIKey = "";
+  String googleAPIKey = "GOOGLE_API";
   late BitmapDescriptor sourceIcon;
   late BitmapDescriptor destinationIcon;
 

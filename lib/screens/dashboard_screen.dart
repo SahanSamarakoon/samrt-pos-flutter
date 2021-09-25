@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
+
 import 'package:smart_pos/models/item.dart';
 import 'package:smart_pos/models/salesperson.dart';
 import 'package:smart_pos/models/shop.dart';
@@ -17,15 +19,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     final shopCount = Provider.of<ShopsProvider>(context).uncoveredShops();
     final itemCount = Provider.of<ItemsProvider>(context).remainingItems();
-    final seller = Provider.of<SalesPersonProvider>(context).person;
-    return SingleChildScrollView(
-        child: Column(
+    final seller =
+        Provider.of<SalesPersonProvider>(context, listen: false).person;
+    final formatter = NumberFormat('###,##0.00');
+    final mediaQuery = MediaQuery.of(context);
+    return Column(
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Container(
-              padding: EdgeInsets.symmetric(vertical: 25, horizontal: 20),
+              padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -36,36 +40,49 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           fontWeight: FontWeight.bold,
                           color: Colors.black87),
                     ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Text(
-                      "Daily sales target : ${seller.dialySalesTarget} LKR",
-                      style: TextStyle(
-                          fontSize: 15,
-                          fontStyle: FontStyle.italic,
-                          color: Colors.black87),
-                    ),
+                    Row(
+                      children: [
+                        const Text(
+                          "Daily Sales Target  ",
+                          style: TextStyle(
+                              fontSize: 15,
+                              fontStyle: FontStyle.italic,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87),
+                        ),
+                        Chip(
+                          label: Text(
+                            formatter.format(seller.dailySalesTarget) + " LKR",
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          backgroundColor:
+                              Theme.of(context).colorScheme.primary,
+                        ),
+                      ],
+                    )
                   ]),
             ),
           ],
         ),
         Container(
-            padding: EdgeInsets.symmetric(vertical: 20),
-            width: 250,
-            height: 250,
+            width: (mediaQuery.size.height - mediaQuery.padding.top) * 0.3125,
+            height: (mediaQuery.size.height - mediaQuery.padding.top) * 0.3125,
             child: DialyGoalProgress()),
         Container(
+          padding: const EdgeInsets.only(top: 15),
           child: OutlinedButton(
             child: RichText(
               text: TextSpan(
                 children: [
-                  WidgetSpan(
-                    child: Icon(Icons.map, size: 20),
+                  const WidgetSpan(
+                    child: const Icon(Icons.map, size: 18),
                   ),
                   TextSpan(
-                    text: " Show Route Details",
-                    style: TextStyle(color: Theme.of(context).primaryColor),
+                    text: " Show Route",
+                    style:
+                        TextStyle(color: Theme.of(context).colorScheme.primary),
                   ),
                 ],
               ),
@@ -82,23 +99,25 @@ class _DashboardScreenState extends State<DashboardScreen> {
               margin: EdgeInsets.symmetric(vertical: 15),
               child: InkWell(
                 child: SizedBox(
-                  width: 175,
-                  height: 125,
+                  width: (mediaQuery.size.width) * 0.45,
+                  height:
+                      (mediaQuery.size.height - mediaQuery.padding.top) * 0.17,
                   child: Container(
-                    padding: EdgeInsets.all(5),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         Text(
                           'Shops Progression',
-                          style:
-                              TextStyle(color: Theme.of(context).primaryColor),
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.primary),
                         ),
-                        Divider(),
+                        const Divider(),
                         Text('$shopCount',
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 25)),
-                        Text("shops left")
+                        const Text("Shops left")
                       ],
                     ),
                   ),
@@ -109,23 +128,25 @@ class _DashboardScreenState extends State<DashboardScreen> {
               margin: EdgeInsets.symmetric(vertical: 15),
               child: InkWell(
                 child: SizedBox(
-                  width: 175,
-                  height: 125,
+                  width: (mediaQuery.size.width) * 0.45,
+                  height:
+                      (mediaQuery.size.height - mediaQuery.padding.top) * 0.17,
                   child: Container(
-                    padding: EdgeInsets.all(5),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         Text(
                           'Inventory Progression',
-                          style:
-                              TextStyle(color: Theme.of(context).primaryColor),
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.primary),
                         ),
-                        Divider(),
+                        const Divider(),
                         Text('$itemCount',
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 25)),
-                        Text("items left")
+                        const Text("Items left")
                       ],
                     ),
                   ),
@@ -135,6 +156,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ],
         )
       ],
-    ));
+    );
   }
 }

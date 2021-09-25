@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 import 'package:smart_pos/models/payment.dart';
 import 'package:smart_pos/widgets/main_drawer.dart';
 import 'package:smart_pos/widgets/sales_item_widget.dart';
@@ -15,31 +16,41 @@ class _SalesScreenState extends State<SalesScreen> {
   @override
   Widget build(BuildContext context) {
     final paymentData = Provider.of<PaymentsProvider>(context);
+    var formatter = NumberFormat('###,##0.00');
+    final mediaQuery = MediaQuery.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text("Your Sales"),
+        title: const Text("Daily Sales Information"),
       ),
       drawer: MainDrawer(),
       body: Column(children: [
         Card(
-          margin: EdgeInsets.all(15),
+          margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
           child: Padding(
-            padding: EdgeInsets.all(8),
+            padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text(
+                  const Text(
                     "Total Daily Sales",
-                    style: TextStyle(fontSize: 20),
+                    style: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                  Spacer(),
-                  Text("${paymentData.dailySales().toStringAsFixed(2)} LKR"),
+                  const Spacer(),
+                  Chip(
+                    label: Text(
+                      formatter.format(paymentData.dailySales()) + " LKR",
+                      style: const TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                  ),
                 ]),
           ),
         ),
         Container(
           width: double.infinity,
-          height: 500,
+          height: (mediaQuery.size.height - mediaQuery.padding.top) * 0.725,
           child: ListView.builder(
             itemBuilder: (ctx, index) => SalesItem(paymentData.payments[index]),
             itemCount: paymentData.payments.length,

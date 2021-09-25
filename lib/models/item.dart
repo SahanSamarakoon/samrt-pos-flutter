@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class Item {
   final String id;
@@ -14,45 +17,23 @@ class Item {
 }
 
 class ItemsProvider with ChangeNotifier {
-  List<Item> _items = [
-    Item(
-      id: "001",
-      name: "A Item",
-      price: 100.00,
-      quantity: 100,
-    ),
-    Item(
-      id: "002",
-      name: "B Item",
-      price: 200.00,
-      quantity: 50,
-    ),
-    Item(
-      id: "003",
-      name: "C Item",
-      price: 50.00,
-      quantity: 20,
-    ),
-    Item(
-      id: "004",
-      name: "D Item",
-      price: 150.00,
-      quantity: 150,
-    ),
-  ];
+  List<Item> _items = [];
+
+  void fetchAndSetItems(List<Map> extractedData) {
+    final List<Item> loadedItems = [];
+    extractedData.forEach((itemExtract) {
+      loadedItems.add(Item(
+        id: itemExtract["id"],
+        name: itemExtract["name"],
+        price: itemExtract["price"].toDouble(),
+        quantity: itemExtract["quantity"],
+      ));
+    });
+    _items = loadedItems;
+  }
 
   List<Item> get items {
     return [..._items];
-  }
-
-  void updateList() {
-    _items[3] = Item(
-      id: "024",
-      name: "D Item",
-      price: 15.00,
-      quantity: 15,
-    );
-    notifyListeners();
   }
 
   Item getItem(String itemId) {
@@ -66,15 +47,45 @@ class ItemsProvider with ChangeNotifier {
     return number;
   }
 
-  void updateQuantity(List<Map> itemsToModify) {
+  Future<void> updateQuantity(List<Map> itemsToModify, String sellerId) async {
     int neededItemIndex;
-    itemsToModify.forEach((itemTM) => {
-          neededItemIndex =
-              _items.indexWhere((item) => item.id == itemTM["id"]),
-          if (neededItemIndex >= 0)
-            {_items[neededItemIndex].quantity -= itemTM["quantity"] as int}
-        });
+    int stockQnt;
+    int modifyQnt;
+    int finalQnt;
+    var url;
+    itemsToModify.forEach((itemTM) async {
+      neededItemIndex = _items.indexWhere((item) => item.id == itemTM["id"]);
+      if (neededItemIndex >= 0) {
+        stockQnt = _items[neededItemIndex].quantity;
+        modifyQnt = itemTM["quantity"] as int;
+        finalQnt = stockQnt - modifyQnt;
+        _items[neededItemIndex].quantity -= itemTM["quantity"] as int;
+        notifyListeners();
+        url = Uri.parse(
+            'https://smart-pos-b9bdb-default-rtdb.asia-southeast1.firebasedatabase.app/salesperson/$sellerId/dailyInventory/$neededItemIndex.json');
+        try {
+          final response = await http.patch(url,
+              body: json.encode({
+                "quantity": finalQnt,
+              }));
+          if (response.statusCode >= 400) {
+            _items[neededItemIndex].quantity = stockQnt;
+            notifyListeners();
+          }
+        } catch (error) {
+          _items[neededItemIndex].quantity = stockQnt;
+          notifyListeners();
+        }
+      }
+    });
+  }
 
-    notifyListeners();
+  Item findById(String itemId) {
+    return _items.firstWhere((item) => item.id == itemId);
+  }
+
+  int getItemReamingQnt(String itemId) {
+    final item = _items.firstWhere((item) => item.id == itemId);
+    return item.quantity;
   }
 }

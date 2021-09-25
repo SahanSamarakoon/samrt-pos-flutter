@@ -5,7 +5,7 @@ import 'package:smart_pos/screens/shops_screen.dart';
 import 'package:smart_pos/widgets/main_drawer.dart';
 
 class TabScreen extends StatefulWidget {
-  TabScreen();
+  static const routeName = "/tabs";
   @override
   _TabScreenState createState() => _TabScreenState();
 }
@@ -14,12 +14,7 @@ class _TabScreenState extends State<TabScreen> {
   List<Map<String, Object>> _screens = [];
   int _selectedScreenIndex = 0;
 
-  void _selectScreen(int index) {
-    setState(() {
-      _selectedScreenIndex = index;
-    });
-  }
-
+  @override
   @override
   void initState() {
     _screens = [
@@ -30,27 +25,34 @@ class _TabScreenState extends State<TabScreen> {
     super.initState();
   }
 
+  void _selectScreen(int index) {
+    setState(() {
+      _selectedScreenIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Smart POS"),
+        title: const Text("Smart POS"),
       ),
       drawer: MainDrawer(),
       body: _screens[_selectedScreenIndex]["page"] as Widget,
       bottomNavigationBar: BottomNavigationBar(
         onTap: _selectScreen,
-        backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: Theme.of(context).colorScheme.primary,
         unselectedItemColor: Colors.white54,
         selectedItemColor: Colors.white,
         currentIndex: _selectedScreenIndex,
         type: BottomNavigationBarType.fixed,
         items: [
-          BottomNavigationBarItem(
-              icon: Icon(Icons.dashboard), label: "Dashboard"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.inventory_2), label: "Inventory"),
-          BottomNavigationBarItem(icon: Icon(Icons.shop_2), label: "Shops"),
+          const BottomNavigationBarItem(
+              icon: const Icon(Icons.dashboard), label: "Dashboard"),
+          const BottomNavigationBarItem(
+              icon: const Icon(Icons.inventory_2), label: "Inventory"),
+          const BottomNavigationBarItem(
+              icon: const Icon(Icons.shop_2), label: "Shops"),
         ],
       ),
     );

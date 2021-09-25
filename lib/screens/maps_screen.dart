@@ -3,11 +3,12 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'dart:async';
 
-const double CAMERA_ZOOM = 11;
+import 'package:provider/provider.dart';
+import 'package:smart_pos/models/salesperson.dart';
+
+const double CAMERA_ZOOM = 14;
 const double CAMERA_TILT = 0;
-const double CAMERA_BEARING = 30;
-const LatLng SOURCE_LOCATION = LatLng(42.7477863, -71.1699932);
-const LatLng DEST_LOCATION = LatLng(42.6871386, -71.2143403);
+const double CAMERA_BEARING = 0;
 
 class MapsScreen extends StatefulWidget {
   static const routeName = "/maps";
@@ -16,29 +17,43 @@ class MapsScreen extends StatefulWidget {
 }
 
 class _MapsScreenState extends State<MapsScreen> {
+  // ignore: non_constant_identifier_names
+  late final LatLng SOURCE_LOCATION;
+  // ignore: non_constant_identifier_names
+  late final LatLng DEST_LOCATION;
+
   Completer<GoogleMapController> _controller = Completer();
-// this set will hold my markers
   Set<Marker> _markers = {};
-// this will hold the generated polylines
   Set<Polyline> _polylines = {};
-// this will hold each polyline coordinate as Lat and Lng pairs
   List<LatLng> polylineCoordinates = [];
-// this is the key object - the PolylinePoints
-// which generates every polyline between start and finish
   PolylinePoints polylinePoints = PolylinePoints();
   String googleAPIKey = "GOOGLE_API";
-// for my custom icons
   late BitmapDescriptor sourceIcon;
   late BitmapDescriptor destinationIcon;
 
   @override
   void initState() {
+    final route = Provider.of<SalesPersonProvider>(context, listen: false)
+        .person
+        .dailyRoute;
+    SOURCE_LOCATION =
+        LatLng(route["SOURCE_LOCATION"][0], route["SOURCE_LOCATION"][1]);
+    DEST_LOCATION =
+        LatLng(route["DEST_LOCATION"][0], route["DEST_LOCATION"][1]);
+    setSourceAndDestinationIcons();
     super.initState();
+  }
+
+  void setSourceAndDestinationIcons() async {
+    sourceIcon = await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(devicePixelRatio: 2.5), "assets/pin.png");
+    destinationIcon = await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(devicePixelRatio: 2.5), "assets/pin.png");
   }
 
   void onMapCreated(GoogleMapController controller) {
     _controller.complete(controller);
-    //  setMapPins();
+    setMapPins();
     setPolylines();
   }
 
@@ -74,7 +89,7 @@ class _MapsScreenState extends State<MapsScreen> {
       // with an id, an RGB color and the list of LatLng pairs
       Polyline polyline = Polyline(
           polylineId: PolylineId("poly"),
-          color: Color.fromARGB(255, 40, 122, 198),
+          color: Color.fromARGB(255, 3, 155, 229),
           points: polylineCoordinates);
 
       // add the constructed polyline as a set of points
@@ -96,11 +111,12 @@ class _MapsScreenState extends State<MapsScreen> {
           title: const Text('Map'),
         ),
         body: GoogleMap(
+            myLocationButtonEnabled: true,
             myLocationEnabled: true,
             compassEnabled: true,
             tiltGesturesEnabled: false,
-            markers: _markers,
             polylines: _polylines,
+            markers: _markers,
             mapType: MapType.normal,
             initialCameraPosition: initialLocation,
             onMapCreated: onMapCreated));

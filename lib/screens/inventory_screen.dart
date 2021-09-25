@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
+
 import 'package:smart_pos/models/item.dart';
 
 class InventoryScreen extends StatefulWidget {
@@ -13,16 +15,20 @@ class _InventoryScreenState extends State<InventoryScreen> {
   @override
   Widget build(BuildContext context) {
     final itemData = Provider.of<ItemsProvider>(context).items;
+    final formatter = NumberFormat('###,##0.00');
 
     return SingleChildScrollView(
       child: Container(
-          padding: EdgeInsets.all(15),
+          padding: const EdgeInsets.all(15),
           width: double.infinity,
           child: Column(children: [
-            Padding(
+            const Padding(
               padding: EdgeInsets.all(10),
               child: Text('Inventory',
-                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                  style: TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                  )),
             ),
             DataTable(
               showBottomBorder: true,
@@ -34,8 +40,8 @@ class _InventoryScreenState extends State<InventoryScreen> {
                         style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.bold,
-                            color: Theme.of(context).primaryColor))),
-                DataColumn(
+                            color: Theme.of(context).colorScheme.primary))),
+                const DataColumn(
                   label: Text(''),
                 ),
                 DataColumn(
@@ -43,17 +49,17 @@ class _InventoryScreenState extends State<InventoryScreen> {
                         style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.bold,
-                            color: Theme.of(context).primaryColor))),
-                DataColumn(
+                            color: Theme.of(context).colorScheme.primary))),
+                const DataColumn(
                   label: Text(''),
                 ),
                 DataColumn(
-                    label: Text('Per Item Price',
+                    label: Text('Price',
                         style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.bold,
-                            color: Theme.of(context).primaryColor))),
-                DataColumn(
+                            color: Theme.of(context).colorScheme.primary))),
+                const DataColumn(
                   label: Text(''),
                 ),
                 DataColumn(
@@ -61,18 +67,28 @@ class _InventoryScreenState extends State<InventoryScreen> {
                         style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.bold,
-                            color: Theme.of(context).primaryColor))),
+                            color: Theme.of(context).colorScheme.primary))),
               ],
               rows: itemData
                   .map(((item) => DataRow(
                         cells: <DataCell>[
                           DataCell(Text(item.id)),
-                          DataCell(VerticalDivider(thickness: 3)),
+                          const DataCell(VerticalDivider(thickness: 3)),
                           DataCell(Text(item.name)),
-                          DataCell(VerticalDivider(thickness: 3)),
-                          DataCell(Text("${item.price}")),
-                          DataCell(VerticalDivider(thickness: 3)),
-                          DataCell(Text("${item.quantity}")),
+                          const DataCell(VerticalDivider(thickness: 3)),
+                          DataCell(Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Text(formatter.format(item.price)),
+                            ],
+                          )),
+                          const DataCell(VerticalDivider(thickness: 3)),
+                          DataCell(Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Text("${item.quantity}"),
+                            ],
+                          )),
                         ],
                       )))
                   .toList(),

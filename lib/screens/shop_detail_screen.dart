@@ -26,29 +26,33 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
     final shopId = ModalRoute.of(context)!.settings.arguments as String;
     final shop =
         Provider.of<ShopsProvider>(context, listen: false).findById(shopId);
+    final mediaQuery = MediaQuery.of(context);
     return Scaffold(
         appBar: AppBar(
           title: Text(shop.title),
         ),
         body: Padding(
-            padding: EdgeInsets.all(15),
+            padding: const EdgeInsets.all(15),
             child: Column(
               children: [
                 Container(
                     width: double.infinity,
-                    height: 300,
+                    height:
+                        (mediaQuery.size.height - mediaQuery.padding.top) * 0.5,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(15),
-                      child: MapWidegt(shop.location, 18),
+                      child: MapWidegt([shop.location], 20),
                     )),
                 Card(
                   margin: EdgeInsets.symmetric(vertical: 15),
                   child: InkWell(
                     child: SizedBox(
                       width: double.infinity,
-                      height: 200,
+                      height:
+                          (mediaQuery.size.height - mediaQuery.padding.top) *
+                              0.3125,
                       child: Container(
-                        padding: EdgeInsets.all(15),
+                        padding: const EdgeInsets.all(15),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -58,19 +62,19 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 20,
-                                  color: Theme.of(context).primaryColor),
+                                  color: Theme.of(context).colorScheme.primary),
                             ),
-                            Divider(),
+                            const Divider(),
                             Text(shop.cp,
-                                style: TextStyle(
+                                style: const TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 15)),
                             Text(shop.address),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 IconButton(
-                                  icon: new Icon(Icons.phone),
-                                  color: Theme.of(context).primaryColor,
+                                  icon: const Icon(Icons.phone),
+                                  color: Theme.of(context).colorScheme.primary,
                                   onPressed: () {
                                     setState(() {
                                       _makePhoneCall('tel:${shop.telephone}');
@@ -78,6 +82,10 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
                                   },
                                 ),
                                 FloatingActionButton(
+                                    foregroundColor:
+                                        Theme.of(context).colorScheme.secondary,
+                                    backgroundColor:
+                                        Theme.of(context).colorScheme.primary,
                                     child: const Icon(Icons.payment),
                                     onPressed: () {
                                       Navigator.of(context).pushNamed(

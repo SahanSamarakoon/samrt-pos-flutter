@@ -14,7 +14,7 @@ class _ShopItemWidgetState extends State<ShopItemWidget> {
   @override
   Widget build(BuildContext context) {
     return Card(
-        margin: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+        margin: EdgeInsets.symmetric(vertical: 1, horizontal: 10),
         child: Column(
           children: [
             ListTile(
@@ -24,10 +24,11 @@ class _ShopItemWidgetState extends State<ShopItemWidget> {
                 },
                 title: Text(
                   "${widget.shop.title}",
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 subtitle: Text("${widget.shop.address}"),
                 trailing: Checkbox(
+                  activeColor: Theme.of(context).colorScheme.primary,
                   onChanged: (bool? value) {
                     setState(() {
                       widget.checkShop(widget.shop.id);

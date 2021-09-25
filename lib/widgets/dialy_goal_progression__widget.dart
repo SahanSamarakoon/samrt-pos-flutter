@@ -10,10 +10,17 @@ class DialyGoalProgress extends StatefulWidget {
 }
 
 class _DialyGoalProgressState extends State<DialyGoalProgress> {
+  late final dailytarget;
+  @override
+  void initState() {
+    dailytarget = Provider.of<SalesPersonProvider>(context, listen: false)
+        .person
+        .dailySalesTarget;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final dailytarget =
-        Provider.of<SalesPersonProvider>(context).person.dialySalesTarget;
     final dailysales = Provider.of<PaymentsProvider>(context).dailySales();
     final double progressValue = (dailysales / dailytarget) * 100;
     return SfRadialGauge(axes: <RadialAxis>[
@@ -34,7 +41,7 @@ class _DialyGoalProgressState extends State<DialyGoalProgress> {
               positionFactor: 0,
               angle: 90,
               widget: Text(
-                progressValue.toStringAsFixed(1) + '% Tragets Covered ',
+                progressValue.toStringAsFixed(2) + '% of Traget Covered ',
                 style: TextStyle(fontSize: 14),
               ))
         ],
@@ -45,7 +52,7 @@ class _DialyGoalProgressState extends State<DialyGoalProgress> {
               sizeUnit: GaugeSizeUnit.factor,
               cornerStyle: CornerStyle.bothCurve,
               gradient: const SweepGradient(
-                  colors: <Color>[Color(0xFF00a9b5), Color(0xFFa4edeb)],
+                  colors: <Color>[Color(0xFFa4edeb), Color(0xFF00a9b5)],
                   stops: <double>[0.25, 0.75])),
         ],
       )

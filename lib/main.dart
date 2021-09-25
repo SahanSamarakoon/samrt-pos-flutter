@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:smart_pos/middleware/auth.dart';
 import 'package:smart_pos/models/item.dart';
 import 'package:smart_pos/models/payment.dart';
 import 'package:smart_pos/models/salesperson.dart';
@@ -30,6 +31,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
         providers: [
+          ChangeNotifierProvider.value(
+            value: Auth(),
+          ),
           ChangeNotifierProvider(create: (ctx) => ShopsProvider()),
           ChangeNotifierProvider(create: (ctx) => ItemsProvider()),
           ChangeNotifierProvider(create: (ctx) => PaymentsProvider()),

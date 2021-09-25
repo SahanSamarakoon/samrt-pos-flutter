@@ -37,6 +37,7 @@ dependencies:
   flutter_phone_direct_caller: ^2.0.0
   splashscreen:
   qr_code_scanner: ^0.5.2
+  flutter_secure_storage: ^4.2.1
 
 
 
@@ -75,7 +76,7 @@ flutter:
   fonts:
     - family: Righteous
       fonts:
-        - asset: Righteous-Regular
+        - asset: assets/fonts/Righteous-Regular.ttf
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf

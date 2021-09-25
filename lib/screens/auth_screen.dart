@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:smart_pos/middleware/auth.dart';
 
 class AuthScreen extends StatelessWidget {
   static const routeName = '/auth';
@@ -83,7 +85,26 @@ class _AuthCardState extends State<AuthCard> {
             ));
   }
 
-  Future<void> _submit() async {}
+  Future<void> _submit() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+    _formKey.currentState!.save();
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      await Provider.of<Auth>(context, listen: false).signin(
+          _authData["email"] as String, _authData["password"] as String);
+    } catch (error) {
+      print(error);
+      var errorMessage = "Authenticate Faild. Please try again";
+      _showErrorDialog(errorMessage);
+    }
+    setState(() {
+      _isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

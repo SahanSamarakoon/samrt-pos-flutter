@@ -1,5 +1,4 @@
-import 'dart:convert';
-
+// ignore_for_file: non_constant_identifier_names
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -18,12 +17,16 @@ class Item {
 
 class ItemsProvider with ChangeNotifier {
   List<Item> _items = [];
+  final String? userId;
+  final String? authToken;
+  final SERVER_IP = 'http://10.0.2.2:3000';
+  ItemsProvider(this.userId, this.authToken, this._items);
 
-  void fetchAndSetItems(List<Map> extractedData) {
+  void fetchAndSetItems(Map<String, dynamic> extractedData) {
     final List<Item> loadedItems = [];
-    extractedData.forEach((itemExtract) {
+    extractedData.forEach((itemId, itemExtract) {
       loadedItems.add(Item(
-        id: itemExtract["id"],
+        id: itemId,
         name: itemExtract["name"],
         price: itemExtract["price"].toDouble(),
         quantity: itemExtract["quantity"],
@@ -52,7 +55,7 @@ class ItemsProvider with ChangeNotifier {
     int stockQnt;
     int modifyQnt;
     int finalQnt;
-    var url;
+
     itemsToModify.forEach((itemTM) async {
       neededItemIndex = _items.indexWhere((item) => item.id == itemTM["id"]);
       if (neededItemIndex >= 0) {
@@ -61,18 +64,24 @@ class ItemsProvider with ChangeNotifier {
         finalQnt = stockQnt - modifyQnt;
         _items[neededItemIndex].quantity -= itemTM["quantity"] as int;
         notifyListeners();
-        url = Uri.parse(
-            'https://smart-pos-b9bdb-default-rtdb.asia-southeast1.firebasedatabase.app/salesperson/$sellerId/dailyInventory/$neededItemIndex.json');
         try {
-          final response = await http.patch(url,
-              body: json.encode({
-                "quantity": finalQnt,
-              }));
+          final response = await http.patch(
+              Uri.parse("$SERVER_IP/api/task/salesperson/updateInventory"),
+              body: {
+                "sellerId": userId,
+                "itemId": itemTM["id"],
+                "quantity": finalQnt.toString(),
+              },
+              headers: {
+                "x-access-token": authToken as String
+              });
+          print(response.body);
           if (response.statusCode >= 400) {
             _items[neededItemIndex].quantity = stockQnt;
             notifyListeners();
           }
         } catch (error) {
+          print(error);
           _items[neededItemIndex].quantity = stockQnt;
           notifyListeners();
         }

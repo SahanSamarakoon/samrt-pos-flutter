@@ -14,7 +14,7 @@ class _DialyGoalProgressState extends State<DialyGoalProgress> {
   @override
   void initState() {
     dailytarget = Provider.of<SalesPersonProvider>(context, listen: false)
-        .person
+        .person!
         .dailySalesTarget;
     super.initState();
   }

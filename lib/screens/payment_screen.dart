@@ -98,13 +98,14 @@ class _PaymentScreenState extends State<PaymentScreen> {
         .showSnackBar(SnackBar(content: Text("Removed the Entry")));
   }
 
-  void _updateSalesperson(String shopId, String sellerId) {
+  void _updateSalesperson(String shopId, String sellerId,
+      [bool isOnline = false]) {
     Provider.of<ShopsProvider>(context, listen: false)
         .checkShop(shopId, sellerId);
     Provider.of<ItemsProvider>(context, listen: false)
         .updateQuantity(widget.itemsToModify, sellerId);
     Provider.of<PaymentsProvider>(context, listen: false)
-        .addPayment(sellerId, shopId, widget.itemsToModify, total);
+        .addPayment(sellerId, shopId, widget.itemsToModify, total, isOnline);
   }
 
   @override
@@ -278,16 +279,19 @@ class _PaymentScreenState extends State<PaymentScreen> {
                         title: const Text("Confirm the Invoice",
                             style: TextStyle(color: Colors.black)),
                         content: const Text(
-                            "Confirm the invoice wiht selecting the customer's payment method."),
+                            "Confirm the invoice with selecting the customer's payment method."),
                         actions: [
                           ElevatedButton(
                               onPressed: () {
-                                Navigator.of(ctx).pop(false);
+                                _updateSalesperson(shop.id, seller!.id, true);
+                                Navigator.of(ctx).pop(true);
+                                Navigator.of(ctx).pop();
+                                Navigator.of(ctx).pop();
                               },
                               child: const Text("Pay Online")),
                           ElevatedButton(
                               onPressed: () {
-                                _updateSalesperson(shop.id, seller.id);
+                                _updateSalesperson(shop.id, seller!.id);
                                 Navigator.of(ctx).pop(true);
                                 Navigator.of(ctx).pop();
                                 Navigator.of(ctx).pop();

@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:smart_pos/middleware/locationUpdate.dart';
 import 'package:smart_pos/models/item.dart';
 import 'package:smart_pos/models/payment.dart';
 import 'package:smart_pos/models/salesperson.dart';
@@ -24,13 +25,15 @@ class _SplashState extends State<Splash> {
       final seller =
           Provider.of<SalesPersonProvider>(context, listen: false).person;
       Provider.of<ShopsProvider>(context, listen: false)
-          .fetchAndSetProducts(seller.dailyShops);
+          .fetchAndSetProducts(seller!.dailyShops);
       Provider.of<ItemsProvider>(context, listen: false)
           .fetchAndSetItems(seller.dailyInventory);
       Provider.of<PaymentsProvider>(context, listen: false)
           .fetchAndSetPayments(seller.dailySalesProgression);
+      Provider.of<LocationUpdate>(context, listen: false).updateLocation();
       return Future.value(new TabScreen());
     } catch (error) {
+      print(error);
       await showDialog<Null>(
           context: context,
           builder: (ctx) => AlertDialog(
@@ -52,17 +55,19 @@ class _SplashState extends State<Splash> {
   @override
   Widget build(BuildContext context) {
     return SplashScreen(
+      loaderColor: Colors.white,
+      backgroundColor: Color.fromRGBO(0, 150, 136, 1),
       seconds: 3,
       navigateAfterFuture: loadFromFuture(),
       title: const Text(
         'Smart POS',
-        textScaleFactor: 4,
-        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.teal),
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 60,
+          fontFamily: 'Righteous',
+          fontWeight: FontWeight.bold,
+        ),
       ),
-      // image: new Image.network(
-      //     'https://www.geeksforgeeks.org/wp-content/uploads/gfg_200X200.png'),
-      // photoSize: 100.0,
-      loaderColor: Colors.teal,
     );
   }
 }

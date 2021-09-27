@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -11,8 +13,8 @@ class Auth with ChangeNotifier {
   String? _userId;
   Timer? _authTimer;
 
-  // ignore: non_constant_identifier_names
   final SERVER_IP = 'http://10.0.2.2:3000';
+  // final SERVER_IP = 'http://localhost:3000';
   final storage = FlutterSecureStorage();
 
   bool get isAuth {
@@ -36,42 +38,48 @@ class Auth with ChangeNotifier {
     try {
       final response = await http.post(Uri.parse("$SERVER_IP/api/auth/signin"),
           body: {"email": email, "password": password});
-      print(response.body);
       final responseData = json.decode(response.body);
+      print("Auth Succes");
+      print(responseData);
       if (response.statusCode == 200) {
-        storage.write(key: "jwtData", value: response.body);
+        _token = responseData["accessToken"];
+        _userId = responseData["id"];
+        _expiryDate = DateTime.now()
+            .add(Duration(seconds: int.parse(responseData["expiresIn"])));
+        _autoLogout();
+        notifyListeners();
+        final userData = json.encode(
+          {
+            'accessToken': _token,
+            'id': _userId,
+            'expiresIn': _expiryDate!.toIso8601String(),
+          },
+        );
+        await storage.write(key: "jwtData", value: userData);
       }
-      _token = responseData["accessToken"];
-      _userId = responseData["id"];
-      _expiryDate = DateTime.now()
-          .add(Duration(seconds: int.parse(responseData["expiresIn"])));
-      _autoLogout();
-      notifyListeners();
     } catch (error) {
       throw error;
     }
   }
 
-  // Future<bool> tryAutoLogin() async {
-  // final prefs = await SharedPreferences.getInstance();
-  // if (!prefs.containsKey('userData')) {
-  //   return false;
-  // }
-  // final extractedUserData = json.decode(prefs.getString('userData') as String)
-  //     as Map<String, dynamic>;
-  // final expiryDate =
-  //     DateTime.parse(extractedUserData['expiryDate'] as String);
+  Future<bool> tryAutoLogin() async {
+    String? value = await storage.read(key: "jwtData");
+    if (value == null) {
+      return false;
+    }
+    final extractedUserData = json.decode(value) as Map<String, dynamic>;
+    final expiryDate = DateTime.parse(extractedUserData['expiresIn'] as String);
 
-  // if (expiryDate.isBefore(DateTime.now())) {
-  //   return false;
-  // }
-  // _token = extractedUserData['token'] as String;
-  // _userId = extractedUserData['userId'] as String;
-  // _expiryDate = expiryDate;
-  // notifyListeners();
-  // _autoLogout();
-  // return true;
-  // }
+    if (expiryDate.isBefore(DateTime.now())) {
+      return false;
+    }
+    _token = extractedUserData['accessToken'] as String;
+    _userId = extractedUserData['id'] as String;
+    _expiryDate = expiryDate;
+    notifyListeners();
+    _autoLogout();
+    return true;
+  }
 
   Future<void> logout() async {
     _token = null;
@@ -82,11 +90,10 @@ class Auth with ChangeNotifier {
       _authTimer = null;
     }
     notifyListeners();
-    // final prefs = await SharedPreferences.getInstance();
-    // prefs.clear();
+    await storage.delete(key: "jwtData");
   }
 
-  void _autoLogout() {
+  Future<void> _autoLogout() async {
     if (_authTimer != null) {
       _authTimer!.cancel();
     }

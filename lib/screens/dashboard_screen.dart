@@ -34,7 +34,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Hello, ${seller.name}",
+                      "Hello, ${seller!.name}",
                       style: TextStyle(
                           fontSize: 25,
                           fontWeight: FontWeight.bold,

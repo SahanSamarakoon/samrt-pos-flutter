@@ -34,7 +34,7 @@ class _MapsScreenState extends State<MapsScreen> {
   @override
   void initState() {
     final route = Provider.of<SalesPersonProvider>(context, listen: false)
-        .person
+        .person!
         .dailyRoute;
     SOURCE_LOCATION =
         LatLng(route["SOURCE_LOCATION"][0], route["SOURCE_LOCATION"][1]);

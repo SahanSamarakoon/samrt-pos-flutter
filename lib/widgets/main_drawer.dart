@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:smart_pos/middleware/auth.dart';
 import 'package:smart_pos/models/salesperson.dart';
-import 'package:smart_pos/screens/auth_screen.dart';
 import 'package:smart_pos/screens/sales_screen.dart';
 import 'package:smart_pos/screens/tabs_screen.dart';
 
@@ -14,7 +14,7 @@ class MainDrawer extends StatelessWidget {
       child: Column(
         children: [
           AppBar(
-            title: Text("Hello, ${seller.name}"),
+            title: Text("Hello, ${seller!.name}"),
             automaticallyImplyLeading: false,
           ),
           const Divider(),
@@ -39,7 +39,9 @@ class MainDrawer extends StatelessWidget {
             leading: const Icon(Icons.logout),
             title: const Text("Logout"),
             onTap: () {
-              Navigator.of(context).popAndPushNamed(AuthScreen.routeName);
+              Provider.of<Auth>(context, listen: false).logout();
+              Navigator.of(context).pop();
+              Navigator.of(context).pushReplacementNamed("/");
             },
           ),
         ],

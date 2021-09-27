@@ -1,5 +1,4 @@
-import 'dart:convert';
-
+// ignore_for_file: non_constant_identifier_names
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -23,20 +22,25 @@ class ShopItem {
 
 class ShopsProvider with ChangeNotifier {
   List<ShopItem> _items = [];
+  final String? userId;
+  final String? authToken;
+  final SERVER_IP = 'http://10.0.2.2:3000';
 
-  void fetchAndSetProducts(List<Map> extractedData) {
+  ShopsProvider(this.userId, this.authToken, this._items);
+
+  void fetchAndSetProducts(Map<String, dynamic> extractedData) {
     final List<ShopItem> loadedShops = [];
-    extractedData.forEach((shop) {
+    extractedData.forEach((shopId, shopData) {
       loadedShops.add(ShopItem(
-          id: shop["id"],
-          title: shop["title"],
-          address: shop["address"],
-          cp: shop["cp"],
-          telephone: shop["telephone"],
-          location: (shop["location"] as List<dynamic>)
+          id: shopId,
+          title: shopData["title"],
+          address: shopData["address"],
+          cp: shopData["cp"],
+          telephone: shopData["telephone"],
+          location: (shopData["location"] as List<dynamic>)
               .map((location) => location as double)
               .toList(),
-          isCovered: shop["isCovered"]));
+          isCovered: shopData["isCovered"]));
     });
     _items = loadedShops;
   }
@@ -49,19 +53,21 @@ class ShopsProvider with ChangeNotifier {
     final shopIndex = _items.indexWhere((shop) => shop.id == shopId);
     _items[shopIndex].isCovered = true;
     notifyListeners();
-    var url = Uri.parse(
-        'https://smart-pos-b9bdb-default-rtdb.asia-southeast1.firebasedatabase.app/salesperson/$sellerId/dailyShops/$shopIndex.json');
     try {
-      final response = await http.patch(url,
-          body: json.encode({
-            "isCovered": true,
-          }));
-      print(response);
+      final response = await http
+          .patch(Uri.parse("$SERVER_IP/api/task/salesperson/checkShop"), body: {
+        "sellerId": userId,
+        "shopId": shopId,
+        "isCovered": "true",
+      }, headers: {
+        "x-access-token": authToken as String
+      });
       if (response.statusCode >= 400) {
         _items[shopIndex].isCovered = false;
         notifyListeners();
       }
     } catch (error) {
+      print(error);
       _items[shopIndex].isCovered = false;
       notifyListeners();
     }

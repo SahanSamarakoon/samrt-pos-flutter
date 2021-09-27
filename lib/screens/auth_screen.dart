@@ -13,36 +13,34 @@ class AuthScreen extends StatelessWidget {
         children: <Widget>[
           Container(
             decoration: BoxDecoration(
-              color: Color.fromRGBO(0, 150, 136, 1).withOpacity(1),
+              color: Color.fromRGBO(0, 150, 136, 1),
             ),
           ),
-          SingleChildScrollView(
-            child: Container(
-              height: deviceSize.height,
-              width: deviceSize.width,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    margin: EdgeInsets.only(bottom: 20.0),
-                    padding: EdgeInsets.all(13),
-                    child: Text(
-                      'Smart POS',
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.secondary,
-                        fontSize: 60,
-                        fontFamily: 'Righteous',
-                        fontWeight: FontWeight.bold,
-                      ),
+          Container(
+            height: deviceSize.height,
+            width: deviceSize.width,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                  margin: EdgeInsets.only(bottom: 20.0),
+                  padding: EdgeInsets.all(13),
+                  child: Text(
+                    'Smart POS',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.secondary,
+                      fontSize: 60,
+                      fontFamily: 'Righteous',
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  Flexible(
-                    flex: deviceSize.width > 600 ? 2 : 1,
-                    child: AuthCard(),
-                  ),
-                ],
-              ),
+                ),
+                Flexible(
+                  flex: deviceSize.width > 600 ? 2 : 1,
+                  child: AuthCard(),
+                ),
+              ],
             ),
           ),
         ],
@@ -66,7 +64,6 @@ class _AuthCardState extends State<AuthCard> {
     'email': '',
     'password': '',
   };
-  var _isLoading = false;
   final _passwordController = TextEditingController();
 
   void _showErrorDialog(String errorMessage) {
@@ -80,7 +77,7 @@ class _AuthCardState extends State<AuthCard> {
                     onPressed: () {
                       Navigator.of(ctx).pop();
                     },
-                    child: Text("Ok"))
+                    child: Text("OK"))
               ],
             ));
   }
@@ -90,9 +87,6 @@ class _AuthCardState extends State<AuthCard> {
       return;
     }
     _formKey.currentState!.save();
-    setState(() {
-      _isLoading = true;
-    });
     try {
       await Provider.of<Auth>(context, listen: false).signin(
           _authData["email"] as String, _authData["password"] as String);
@@ -101,9 +95,6 @@ class _AuthCardState extends State<AuthCard> {
       var errorMessage = "Authenticate Faild. Please try again";
       _showErrorDialog(errorMessage);
     }
-    setState(() {
-      _isLoading = false;
-    });
   }
 
   @override
@@ -154,23 +145,20 @@ class _AuthCardState extends State<AuthCard> {
                 SizedBox(
                   height: 20,
                 ),
-                if (_isLoading)
-                  CircularProgressIndicator()
-                else
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        primary: Theme.of(context).colorScheme.primary,
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 30.0, vertical: 8.0),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        )),
-                    child: Text(
-                      'LOGIN',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    onPressed: _submit,
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      primary: Theme.of(context).colorScheme.primary,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 30.0, vertical: 8.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      )),
+                  child: Text(
+                    'LOGIN',
+                    style: TextStyle(color: Colors.white),
                   ),
+                  onPressed: _submit,
+                ),
               ],
             ),
           ),

@@ -22,6 +22,7 @@ class _ShopsScreenState extends State<ShopsScreen> {
           width: double.infinity,
           height: (mediaQuery.size.height - mediaQuery.padding.top) * 0.4,
           child: ClipRRect(
+            key: Key("mapWidget"),
             borderRadius: BorderRadius.circular(10),
             child: MapWidegt(shopData.getShopLocations(), 14),
           )),

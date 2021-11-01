@@ -14,7 +14,7 @@ class MainDrawer extends StatelessWidget {
       child: Column(
         children: [
           AppBar(
-            title: Text("Hello, ${seller!.name}"),
+            title: Text("Hello, ${seller!.firstName}"),
             automaticallyImplyLeading: false,
           ),
           const Divider(),

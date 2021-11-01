@@ -40,6 +40,7 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
                     height:
                         (mediaQuery.size.height - mediaQuery.padding.top) * 0.5,
                     child: ClipRRect(
+                      key: Key("shopMapWidget"),
                       borderRadius: BorderRadius.circular(15),
                       child: MapWidegt([shop.location], 20),
                     )),
@@ -82,6 +83,7 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
                                   },
                                 ),
                                 FloatingActionButton(
+                                    key: Key("invoiceButton"),
                                     foregroundColor:
                                         Theme.of(context).colorScheme.secondary,
                                     backgroundColor:

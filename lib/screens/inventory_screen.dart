@@ -24,19 +24,24 @@ class _InventoryScreenState extends State<InventoryScreen> {
           child: Column(children: [
             const Padding(
               padding: EdgeInsets.all(10),
-              child: Text('Inventory',
-                  style: TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-                  )),
+              child: Text(
+                'Inventory',
+                style: TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                ),
+                key: Key("titleText"),
+              ),
             ),
             DataTable(
+              key: Key("dataTable"),
               showBottomBorder: true,
               dividerThickness: 3,
               columnSpacing: 4,
               columns: [
                 DataColumn(
                     label: Text('ID',
+                        key: Key("idColum"),
                         style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.bold,
@@ -46,6 +51,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
                 ),
                 DataColumn(
                     label: Text('Name',
+                        key: Key("nameColum"),
                         style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.bold,
@@ -55,6 +61,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
                 ),
                 DataColumn(
                     label: Text('Price',
+                        key: Key("priceColum"),
                         style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.bold,
@@ -64,6 +71,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
                 ),
                 DataColumn(
                     label: Text('Quantity',
+                        key: Key("qntColum"),
                         style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.bold,
@@ -72,7 +80,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
               rows: itemData
                   .map(((item) => DataRow(
                         cells: <DataCell>[
-                          DataCell(Text(item.id)),
+                          DataCell(Text(item.id.substring(item.id.length - 5))),
                           const DataCell(VerticalDivider(thickness: 3)),
                           DataCell(Text(item.name)),
                           const DataCell(VerticalDivider(thickness: 3)),

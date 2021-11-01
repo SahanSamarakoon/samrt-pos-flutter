@@ -40,6 +40,7 @@ class _TabScreenState extends State<TabScreen> {
       drawer: MainDrawer(),
       body: _screens[_selectedScreenIndex]["page"] as Widget,
       bottomNavigationBar: BottomNavigationBar(
+        key: Key('bottom'),
         onTap: _selectScreen,
         backgroundColor: Theme.of(context).colorScheme.primary,
         unselectedItemColor: Colors.white54,
@@ -48,11 +49,23 @@ class _TabScreenState extends State<TabScreen> {
         type: BottomNavigationBarType.fixed,
         items: [
           const BottomNavigationBarItem(
-              icon: const Icon(Icons.dashboard), label: "Dashboard"),
+              icon: const Icon(
+                Icons.dashboard,
+                key: Key("dashboardIcon"),
+              ),
+              label: "Dashboard"),
           const BottomNavigationBarItem(
-              icon: const Icon(Icons.inventory_2), label: "Inventory"),
+              icon: const Icon(
+                Icons.inventory_2,
+                key: Key("inventoryIcon"),
+              ),
+              label: "Inventory"),
           const BottomNavigationBarItem(
-              icon: const Icon(Icons.shop_2), label: "Shops"),
+              icon: const Icon(
+                Icons.shop_2,
+                key: Key("shopsIcon"),
+              ),
+              label: "Shops"),
         ],
       ),
     );

@@ -12,9 +12,11 @@ class Auth with ChangeNotifier {
   // ignore: unused_field
   String? _userId;
   Timer? _authTimer;
+  http.Client client;
 
-  final SERVER_IP = 'http://10.0.2.2:3000';
-  // final SERVER_IP = 'http://localhost:3000';
+  Auth(this.client);
+
+  final SERVER_IP = 'http://10.0.2.2:3001';
   final storage = FlutterSecureStorage();
 
   bool get isAuth {
@@ -35,30 +37,35 @@ class Auth with ChangeNotifier {
   }
 
   Future<void> signin(String email, String password) async {
-    try {
-      final response = await http.post(Uri.parse("$SERVER_IP/api/auth/signin"),
-          body: {"email": email, "password": password});
+    // Future<void> signin(String email, String password, http.Client client) async {
+    // final response = await http.post
+    final response = await client.post(Uri.parse("$SERVER_IP/api/auth/signin"),
+        body: {"email": email, "password": password});
+    if (response.statusCode == 200) {
       final responseData = json.decode(response.body);
       print("Auth Succes");
-      print(responseData);
-      if (response.statusCode == 200) {
-        _token = responseData["accessToken"];
-        _userId = responseData["id"];
-        _expiryDate = DateTime.now()
-            .add(Duration(seconds: int.parse(responseData["expiresIn"])));
-        _autoLogout();
-        notifyListeners();
-        final userData = json.encode(
-          {
-            'accessToken': _token,
-            'id': _userId,
-            'expiresIn': _expiryDate!.toIso8601String(),
-          },
-        );
-        await storage.write(key: "jwtData", value: userData);
-      }
-    } catch (error) {
-      throw error;
+      _token = responseData["accessToken"];
+      _userId = responseData["id"];
+      _expiryDate = DateTime.now()
+          .add(Duration(seconds: int.parse(responseData["expiresIn"])));
+      _autoLogout();
+      notifyListeners();
+      final userData = json.encode(
+        {
+          'accessToken': _token,
+          'id': _userId,
+          'expiresIn': _expiryDate!.toIso8601String(),
+        },
+      );
+      await storage.write(
+          key: "jwtData",
+          value: userData); //Should comment this line for unit testing
+    } else if (response.statusCode == 404) {
+      throw Exception('Failed - Wrong Email');
+    } else if (response.statusCode == 401) {
+      throw Exception('Failed - Wrong Password');
+    } else {
+      throw Exception('Failed - Auth');
     }
   }
 
@@ -90,7 +97,8 @@ class Auth with ChangeNotifier {
       _authTimer = null;
     }
     notifyListeners();
-    await storage.delete(key: "jwtData");
+    await storage.delete(
+        key: "jwtData"); //Should comment this line for unit testing
   }
 
   Future<void> _autoLogout() async {

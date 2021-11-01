@@ -1,5 +1,7 @@
 // ignore_for_file: non_constant_identifier_names
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
@@ -8,9 +10,9 @@ class LocationUpdate with ChangeNotifier {
   String? position;
   final String? userId;
   final String? authToken;
-  final SERVER_IP = 'http://10.0.2.2:3000';
+  final String? serverIp;
 
-  LocationUpdate(this.userId, this.authToken);
+  LocationUpdate(this.serverIp, this.userId, this.authToken);
 
   /// Determine the current position of the device.
   ///
@@ -59,24 +61,31 @@ class LocationUpdate with ChangeNotifier {
       return result;
     });
     position = pos.toString();
-    print(position);
-    try {
-      final response = await http.patch(
-          Uri.parse("$SERVER_IP/api/task/salesperson/updateLocation"),
-          body: {
-            "sellerId": userId,
-            "position": position,
-            "dateTime": DateTime.now().toIso8601String(),
-          },
-          headers: {
-            "x-access-token": authToken as String
-          });
-      if (response.statusCode >= 400) {
-        notifyListeners();
-      }
-    } catch (error) {
-      print(error);
-      notifyListeners();
+
+    var regEx = new RegExp(":|,");
+    var ps = position!.split(regEx);
+    var positionNumbers = [];
+    positionNumbers.add(double.parse(ps[1]));
+    positionNumbers.add(double.parse(ps[3]));
+
+    final response = await http.patch(
+        Uri.parse("$serverIp/api/task/salesperson/updateLocation"),
+        body: {
+          "sellerId": userId,
+          "position": positionNumbers.toString(),
+          "dateTime": DateTime.now().toIso8601String(),
+        },
+        headers: {
+          "x-access-token": authToken as String
+        });
+    if (response.statusCode != 200) {
+      throw Exception('Failed - Location Update Failed');
     }
+  }
+
+  Future<void> autoUpdate() async {
+    Timer.periodic(Duration(seconds: 60), (timer) {
+      updateLocation();
+    });
   }
 }

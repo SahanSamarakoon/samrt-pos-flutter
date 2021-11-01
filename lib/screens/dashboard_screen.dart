@@ -34,7 +34,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Hello, ${seller!.name}",
+                      "Hello, ${seller!.firstName} ${seller.lastName}",
+                      key: Key("greetingText"),
                       style: TextStyle(
                           fontSize: 25,
                           fontWeight: FontWeight.bold,
@@ -44,6 +45,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       children: [
                         const Text(
                           "Daily Sales Target  ",
+                          key: Key("salesTargetText"),
                           style: TextStyle(
                               fontSize: 15,
                               fontStyle: FontStyle.italic,
@@ -53,6 +55,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         Chip(
                           label: Text(
                             formatter.format(seller.dailySalesTarget) + " LKR",
+                            key: Key("targetAmount"),
                             style: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold),
@@ -73,6 +76,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         Container(
           padding: const EdgeInsets.only(top: 15),
           child: OutlinedButton(
+            key: Key("showRouteButton"),
             child: RichText(
               text: TextSpan(
                 children: [
@@ -97,6 +101,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           children: [
             Card(
               margin: EdgeInsets.symmetric(vertical: 15),
+              key: Key("shopsProgression"),
               child: InkWell(
                 child: SizedBox(
                   width: (mediaQuery.size.width) * 0.45,
@@ -126,6 +131,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
             Card(
               margin: EdgeInsets.symmetric(vertical: 15),
+              key: Key("inventoryProgression"),
               child: InkWell(
                 child: SizedBox(
                   width: (mediaQuery.size.width) * 0.45,

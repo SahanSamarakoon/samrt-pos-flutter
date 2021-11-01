@@ -168,7 +168,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     label: Text(''),
                   ),
                   DataColumn(
-                      label: Text('Item\nPrice',
+                      label: Text('Unit\nPrice',
                           style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
@@ -198,7 +198,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                             _removeItem(item["id"]);
                           },
                           cells: <DataCell>[
-                            DataCell(Text(item["id"])),
+                            DataCell(Text(
+                                item["id"].substring(item["id"].length - 5))),
                             const DataCell(VerticalDivider(thickness: 3)),
                             DataCell(Text(item["name"])),
                             const DataCell(VerticalDivider(thickness: 3)),

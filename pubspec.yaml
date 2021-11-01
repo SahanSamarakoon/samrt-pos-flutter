@@ -47,6 +47,11 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  integration_test:           
+    sdk: flutter             
+  test: ^1.14.4 
+  mockito: ^5.0.16
+  build_runner: 
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

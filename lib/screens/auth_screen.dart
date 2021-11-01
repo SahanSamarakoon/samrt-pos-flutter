@@ -64,6 +64,7 @@ class _AuthCardState extends State<AuthCard> {
     'email': '',
     'password': '',
   };
+  var _isLoading = false;
   final _passwordController = TextEditingController();
 
   void _showErrorDialog(String errorMessage) {
@@ -87,6 +88,9 @@ class _AuthCardState extends State<AuthCard> {
       return;
     }
     _formKey.currentState!.save();
+    setState(() {
+      _isLoading = true;
+    });
     try {
       await Provider.of<Auth>(context, listen: false).signin(
           _authData["email"] as String, _authData["password"] as String);
@@ -94,6 +98,9 @@ class _AuthCardState extends State<AuthCard> {
       print(error);
       var errorMessage = "Authenticate Faild. Please try again";
       _showErrorDialog(errorMessage);
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -115,6 +122,7 @@ class _AuthCardState extends State<AuthCard> {
             child: Column(
               children: <Widget>[
                 TextFormField(
+                  key: Key("signInEmailField"),
                   decoration: InputDecoration(
                       icon: Icon(Icons.email), label: Text("Email")),
                   keyboardType: TextInputType.emailAddress,
@@ -129,6 +137,7 @@ class _AuthCardState extends State<AuthCard> {
                   },
                 ),
                 TextFormField(
+                  key: Key("signInPasswordField"),
                   decoration: InputDecoration(
                       icon: Icon(Icons.vpn_key), labelText: 'Password'),
                   obscureText: true,
@@ -145,20 +154,24 @@ class _AuthCardState extends State<AuthCard> {
                 SizedBox(
                   height: 20,
                 ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      primary: Theme.of(context).colorScheme.primary,
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 30.0, vertical: 8.0),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      )),
-                  child: Text(
-                    'LOGIN',
-                    style: TextStyle(color: Colors.white),
+                if (_isLoading)
+                  CircularProgressIndicator()
+                else
+                  ElevatedButton(
+                    key: Key("signInSaveButton"),
+                    style: ElevatedButton.styleFrom(
+                        primary: Theme.of(context).colorScheme.primary,
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 30.0, vertical: 8.0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        )),
+                    child: Text(
+                      'LOGIN',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    onPressed: _submit,
                   ),
-                  onPressed: _submit,
-                ),
               ],
             ),
           ),

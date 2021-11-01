@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:smart_pos/models/payment.dart';
+import 'package:smart_pos/models/salesperson.dart';
 import 'package:smart_pos/widgets/main_drawer.dart';
 import 'package:smart_pos/widgets/sales_item_widget.dart';
 
@@ -13,6 +14,15 @@ class SalesScreen extends StatefulWidget {
 }
 
 class _SalesScreenState extends State<SalesScreen> {
+  @override
+  void initState() {
+    final seller =
+        Provider.of<SalesPersonProvider>(context, listen: false).person;
+    Provider.of<PaymentsProvider>(context, listen: false)
+        .fetchAndSetPayments(seller!.dailySalesProgression);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final paymentData = Provider.of<PaymentsProvider>(context);
@@ -52,7 +62,8 @@ class _SalesScreenState extends State<SalesScreen> {
           width: double.infinity,
           height: (mediaQuery.size.height - mediaQuery.padding.top) * 0.725,
           child: ListView.builder(
-            itemBuilder: (ctx, index) => SalesItem(paymentData.payments[index]),
+            itemBuilder: (ctx, index) =>
+                SalesItem(index, paymentData.payments[index]),
             itemCount: paymentData.payments.length,
           ),
         ),

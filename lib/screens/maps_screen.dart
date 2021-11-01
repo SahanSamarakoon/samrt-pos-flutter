@@ -36,10 +36,10 @@ class _MapsScreenState extends State<MapsScreen> {
     final route = Provider.of<SalesPersonProvider>(context, listen: false)
         .person!
         .dailyRoute;
-    SOURCE_LOCATION =
-        LatLng(route["SOURCE_LOCATION"][0], route["SOURCE_LOCATION"][1]);
-    DEST_LOCATION =
-        LatLng(route["DEST_LOCATION"][0], route["DEST_LOCATION"][1]);
+    SOURCE_LOCATION = LatLng(double.parse(route["originLocation"][0]),
+        double.parse(route["originLocation"][1]));
+    DEST_LOCATION = LatLng(double.parse(route["destinationLocation"][0]),
+        double.parse(route["destinationLocation"][1]));
     setSourceAndDestinationIcons();
     super.initState();
   }

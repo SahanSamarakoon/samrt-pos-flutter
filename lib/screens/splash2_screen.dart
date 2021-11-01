@@ -1,8 +1,7 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:smart_pos/middleware/auth.dart';
 import 'package:smart_pos/middleware/locationUpdate.dart';
 import 'package:smart_pos/models/item.dart';
 import 'package:smart_pos/models/payment.dart';
@@ -25,12 +24,12 @@ class _SplashState extends State<Splash> {
       final seller =
           Provider.of<SalesPersonProvider>(context, listen: false).person;
       Provider.of<ShopsProvider>(context, listen: false)
-          .fetchAndSetProducts(seller!.dailyShops);
+          .fetchAndSetShops(seller!.dailyShops);
       Provider.of<ItemsProvider>(context, listen: false)
           .fetchAndSetItems(seller.dailyInventory);
       Provider.of<PaymentsProvider>(context, listen: false)
           .fetchAndSetPayments(seller.dailySalesProgression);
-      Provider.of<LocationUpdate>(context, listen: false).updateLocation();
+      // Provider.of<LocationUpdate>(context, listen: false).autoUpdate();
       return Future.value(new TabScreen());
     } catch (error) {
       print(error);
@@ -43,7 +42,9 @@ class _SplashState extends State<Splash> {
                 actions: [
                   TextButton(
                       onPressed: () {
-                        SystemNavigator.pop();
+                        Provider.of<Auth>(context, listen: false).logout();
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pushReplacementNamed("/");
                       },
                       child: Text("OK"))
                 ],

@@ -52,7 +52,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
           key: Key("modal"),
           onTap: () {},
           child: AddToInvoice(_addNewItem, initialItem),
-          behavior: HitTestBehavior.opaque,
+          behavior: HitTestBehavior.deferToChild,
         );
       },
     );
@@ -328,7 +328,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                 Navigator.of(ctx).pop();
                                 Navigator.of(ctx).pop();
                               },
-                              child: const Text("Pay by Money"))
+                              child: const Text("Pay by Hand"))
                         ],
                       ))
             }

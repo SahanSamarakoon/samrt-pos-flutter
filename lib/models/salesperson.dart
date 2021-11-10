@@ -32,16 +32,16 @@ class SalesPersonProvider with ChangeNotifier {
   final String? userId;
   final String? authToken;
   final String? serverIp;
-  http.Client client;
+  // http.Client client;
 
-  // SalesPersonProvider(this.serverIp, this.userId, this.authToken, this.seller);
-  SalesPersonProvider(
-      this.serverIp, this.userId, this.authToken, this.seller, this.client);
+  SalesPersonProvider(this.serverIp, this.userId, this.authToken, this.seller);
+  // SalesPersonProvider(
+  //     this.serverIp, this.userId, this.authToken, this.seller, this.client);
 
   // Future<void> fetchAndSetSalesperson(http.Client client) async {
   Future<void> fetchAndSetSalesperson() async {
-    final response = await client.post(
-        // final response = await http.post(
+    // final response = await client.post(
+    final response = await http.post(
         Uri.parse("$serverIp/api/task/salesperson"),
         body: {"sellerId": userId},
         headers: {"x-access-token": authToken as String});

@@ -20,10 +20,10 @@ class ItemsProvider with ChangeNotifier {
   final String? userId;
   final String? authToken;
   final String? serverIp;
-  http.Client client;
-  // ItemsProvider(this.serverIp, this.userId, this.authToken, this._items);
-  ItemsProvider(
-      this.serverIp, this.userId, this.authToken, this._items, this.client);
+  // http.Client client;
+  ItemsProvider(this.serverIp, this.userId, this.authToken, this._items);
+  // ItemsProvider(
+  //     this.serverIp, this.userId, this.authToken, this._items, this.client);
 
   void fetchAndSetItems(List<dynamic> extractedData) {
     final List<Item> loadedItems = [];
@@ -68,8 +68,8 @@ class ItemsProvider with ChangeNotifier {
           stockQnt = _items[neededItemIndex].quantity;
           modifyQnt = itemTM["quantity"] as int;
           finalQnt = stockQnt - modifyQnt;
-          // final response = await http.patch(
-          final response = await client.patch(
+          final response = await http.patch(
+              // final response = await client.patch(
               Uri.parse("$serverIp/api/task/salesperson/updateInventory"),
               body: {
                 "sellerId": userId,

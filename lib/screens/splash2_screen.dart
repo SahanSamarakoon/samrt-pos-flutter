@@ -29,7 +29,7 @@ class _SplashState extends State<Splash> {
           .fetchAndSetItems(seller.dailyInventory);
       Provider.of<PaymentsProvider>(context, listen: false)
           .fetchAndSetPayments(seller.dailySalesProgression);
-      // Provider.of<LocationUpdate>(context, listen: false).autoUpdate();
+      Provider.of<LocationUpdate>(context, listen: false).autoUpdate();
       return Future.value(new TabScreen());
     } catch (error) {
       print(error);

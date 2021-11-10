@@ -86,7 +86,7 @@ class _SalesItemState extends State<SalesItem> {
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 4),
-              height: max(widget.payment.transactions.length * 75, 125),
+              height: max(widget.payment.transactions.length * 85, 125),
               child: DataTable(
                 key: Key('dataTable'),
                 showBottomBorder: true,

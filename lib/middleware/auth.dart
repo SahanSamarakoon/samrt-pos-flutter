@@ -12,9 +12,8 @@ class Auth with ChangeNotifier {
   // ignore: unused_field
   String? _userId;
   Timer? _authTimer;
-  http.Client client;
 
-  Auth(this.client);
+  Auth();
 
   final SERVER_IP = 'http://10.0.2.2:3001';
   final storage = FlutterSecureStorage();
@@ -38,9 +37,10 @@ class Auth with ChangeNotifier {
 
   Future<void> signin(String email, String password) async {
     // Future<void> signin(String email, String password, http.Client client) async {
-    // final response = await http.post
-    final response = await client.post(Uri.parse("$SERVER_IP/api/auth/signin"),
-        body: {"email": email, "password": password});
+    final response = await http.post
+        // final response = await client.post
+        (Uri.parse("$SERVER_IP/api/auth/signin"),
+            body: {"email": email, "password": password});
     if (response.statusCode == 200) {
       final responseData = json.decode(response.body);
       print("Auth Succes");

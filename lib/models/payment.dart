@@ -30,11 +30,11 @@ class PaymentsProvider with ChangeNotifier {
   final String? authToken;
   final String? serverIp;
   List<Payment> _payments = [];
-  http.Client client;
+  // http.Client client;
 
-  // PaymentsProvider(this.serverIp, this.userId, this.authToken, this._payments);
-  PaymentsProvider(
-      this.serverIp, this.userId, this.authToken, this._payments, this.client);
+  PaymentsProvider(this.serverIp, this.userId, this.authToken, this._payments);
+  // PaymentsProvider(
+  //     this.serverIp, this.userId, this.authToken, this._payments, this.client);
 
   List<Payment> get payments {
     return [..._payments.reversed];
@@ -45,10 +45,11 @@ class PaymentsProvider with ChangeNotifier {
   Future<void> fetchAndSetPayments(double extractedData) async {
     _payments = [];
     sales = extractedData;
-    // final response = await http.post
-    final response = await client.post(Uri.parse("$serverIp/api/task/payments"),
-        body: {"sellerId": userId},
-        headers: {"x-access-token": authToken as String});
+    final response = await http.post
+        // final response = await client.post
+        (Uri.parse("$serverIp/api/task/payments"),
+            body: {"sellerId": userId},
+            headers: {"x-access-token": authToken as String});
 
     if (response.statusCode == 200) {
       final paymentData = json.decode(response.body) as List<dynamic>;
@@ -91,20 +92,20 @@ class PaymentsProvider with ChangeNotifier {
     double total,
     bool isOnline,
   ) async {
-    // final responseSalesProgress = await http.patch(
-    final responseSalesProgress = await client.patch(
+    final responseSalesProgress = await http.patch(
+        // final responseSalesProgress = await client.patch(
         Uri.parse("$serverIp/api/task/salesperson/updateSalesProgress"),
         body: {
           "sellerId": userId,
-          "dailySalesProgression": sales.toString(),
+          "dailySalesProgression": (sales + total).toString(),
         },
         headers: {
           "x-access-token": authToken as String
         });
 
-    // final responsePayment = await http.post
-    final responsePayment = await client
-        .post(Uri.parse("$serverIp/api/task/salesperson/addPayment"), body: {
+    final responsePayment = await http.post
+        // final responsePayment = await client.post
+        (Uri.parse("$serverIp/api/task/salesperson/addPayment"), body: {
       "sellerId": userId,
       "shopId": shopId,
       "total": total.toString(),

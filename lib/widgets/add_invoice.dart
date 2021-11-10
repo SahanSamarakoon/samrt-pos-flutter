@@ -99,6 +99,41 @@ class _AddToInvoiceState extends State<AddToInvoice> {
                     }).toList(),
                   ),
                 ),
+                const Padding(
+                  padding: const EdgeInsets.only(top: 15),
+                  child: Text("Quantity"),
+                ),
+                TextFormField(
+                  key: Key("qntField"),
+                  decoration:
+                      InputDecoration(contentPadding: const EdgeInsets.all(10)),
+                  initialValue: "1",
+                  keyboardType: TextInputType.number,
+                  textInputAction: TextInputAction.done,
+                  onFieldSubmitted: (_) => _submitData(),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return "Please enter a quantity";
+                    }
+                    if (int.tryParse(value) == null) {
+                      return "Please enter a valid number";
+                    }
+                    if (int.parse(value) <= 0) {
+                      return "Please enter a valid number greater than 0";
+                    }
+                    if (int.parse(value) > remainingQnt) {
+                      return "Please enter a lower or same number as\nremaining stock in the inventory\nRemaing stock:$remainingQnt ";
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    _editedItem = Item(
+                        id: _selectedValue.id,
+                        name: _selectedValue.name,
+                        price: _selectedValue.price,
+                        quantity: int.parse(value as String));
+                  },
+                ),
                 Row(
                   children: [
                     const Padding(
@@ -139,55 +174,22 @@ class _AddToInvoiceState extends State<AddToInvoice> {
                     ),
                   ],
                 ),
-                const Padding(
-                  padding: const EdgeInsets.only(top: 15),
-                  child: Text("Quantity"),
-                ),
-                TextFormField(
-                  key: Key("qntField"),
-                  decoration:
-                      InputDecoration(contentPadding: const EdgeInsets.all(10)),
-                  initialValue: "1",
-                  keyboardType: TextInputType.number,
-                  textInputAction: TextInputAction.done,
-                  onFieldSubmitted: (_) => _submitData(),
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return "Please enter a quantity";
-                    }
-                    if (int.tryParse(value) == null) {
-                      return "Please enter a valid number";
-                    }
-                    if (int.parse(value) <= 0) {
-                      return "Please enter a valid number greater than 0";
-                    }
-                    if (int.parse(value) > remainingQnt) {
-                      return "Please enter a lower or same number as\nremaining stock in the inventory\nRemaing stock:$remainingQnt ";
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    _editedItem = Item(
-                        id: _selectedValue.id,
-                        name: _selectedValue.name,
-                        price: _selectedValue.price,
-                        quantity: int.parse(value as String));
-                  },
-                ),
                 const SizedBox(
                   height: 20,
                 ),
-                ElevatedButton(
-                  key: Key("addButton"),
-                  style: ElevatedButton.styleFrom(
-                    primary: Theme.of(context).colorScheme.primary,
+                Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                  ElevatedButton(
+                    key: Key("addButton"),
+                    style: ElevatedButton.styleFrom(
+                      primary: Theme.of(context).colorScheme.primary,
+                    ),
+                    child: const Text(
+                      "Add to Invoice",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    onPressed: () => _submitData(),
                   ),
-                  child: const Text(
-                    "Add to Invoice",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  onPressed: () => _submitData(),
-                )
+                ])
               ],
             ),
           ),

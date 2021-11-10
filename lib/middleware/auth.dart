@@ -12,9 +12,9 @@ class Auth with ChangeNotifier {
   // ignore: unused_field
   String? _userId;
   Timer? _authTimer;
-  http.Client client;
+  // http.Client client;
 
-  Auth(this.client);
+  // Auth(this.client);
 
   final SERVER_IP = 'http://10.0.2.2:3001';
   final storage = FlutterSecureStorage();
@@ -36,8 +36,8 @@ class Auth with ChangeNotifier {
     return _userId;
   }
 
-  Future<void> signin(String email, String password) async {
-    // Future<void> signin(String email, String password, http.Client client) async {
+  // Future<void> signin(String email, String password) async {
+  Future<void> signin(String email, String password, http.Client client) async {
     // final response = await http.post
     final response = await client.post(Uri.parse("$SERVER_IP/api/auth/signin"),
         body: {"email": email, "password": password});
@@ -57,9 +57,9 @@ class Auth with ChangeNotifier {
           'expiresIn': _expiryDate!.toIso8601String(),
         },
       );
-      await storage.write(
-          key: "jwtData",
-          value: userData); //Should comment this line for unit testing
+      // await storage.write(
+      //     key: "jwtData",
+      //     value: userData); //Should comment this line for unit testing
     } else if (response.statusCode == 404) {
       throw Exception('Failed - Wrong Email');
     } else if (response.statusCode == 401) {
@@ -97,8 +97,8 @@ class Auth with ChangeNotifier {
       _authTimer = null;
     }
     notifyListeners();
-    await storage.delete(
-        key: "jwtData"); //Should comment this line for unit testing
+    // await storage.delete(
+    //     key: "jwtData"); //Should comment this line for unit testing
   }
 
   Future<void> _autoLogout() async {

@@ -16,7 +16,7 @@ final String mockUserId = "61671c22346f6b3724faef50";
 final mockAuthToken =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxNGY4ZDAyMGM2NDU0ODkxNjRjMzc2ZCIsImlhdCI6MTYzMzEyNTIzMCwiZXhwIjoxNjMzMjExNjMwfQ.m9JLztIX0jpFHhAkgrOYbuBiIeSxa8EITBiqfX43cw4";
 final String mockPaymentList =
-    '[{"_id":"616da296d9f30137446e8548","sellerId":"61671c22346f6b3724faef50","shopId":{"_id":"61673501f10633a591268164","shopName":"A Store"},"total":550,"dateTime":"2021-10-23T16:36:37.850Z","transactions":[{"id":{"_id":"616874417a10179ca894e8fa","itemName":"A Item","unitPrice":100},"quantity":1},{"id":{"_id":"616874c07a10179ca894e8fb","itemName":"B Item","unitPrice":50},"quantity":1},{"id":{"_id":"616874e77a10179ca894e8fc","itemName":"C Item","unitPrice":150},"quantity":1},{"id":null,"quantity":1}],"isOnline":false,"__v":0}]';
+    '[{"_id":"616da296d9f30137446e8548","sellerId":"61671c22346f6b3724faef50","shopId":{"_id":"61673501f10633a591268164","shopName":"A Store"},"total":550,"dateTime":"2021-10-23T16:36:37.850Z","transactions":[{"id":{"_id":"616874417a10179ca894e8fa","itemName":"A Item","unitPrice":100},"quantity":1},{"id":{"_id":"616874c07a10179ca894e8fb","itemName":"B Item","unitPrice":50},"quantity":1},{"id":{"_id":"616874e77a10179ca894e8fc","itemName":"C Item","unitPrice":150},"quantity":1}],"isOnline":false,"__v":0}]';
 @GenerateMocks([http.Client])
 void main() {
   group('Fetch And Set Payments - ', () {
@@ -33,6 +33,9 @@ void main() {
       await mockPaymentsProvider.fetchAndSetPayments(1500.00, client);
       expect(mockPaymentsProvider.payments, isA<List<Payment>>());
       expect(mockPaymentsProvider.dailySales(), isA<double>());
+      expect(mockPaymentsProvider.dailySales(), 1500.00);
+      expect(mockPaymentsProvider.moneyInTheHand(), isA<double>());
+      expect(mockPaymentsProvider.dailySales(), 1500.00);
     });
     test('Throws an exception if the http call completes with an error', () {
       // Use Mockito to return an unsuccessful response when it calls the
@@ -64,7 +67,7 @@ void main() {
           Uri.parse("$SERVER_IP/api/task/salesperson/updateSalesProgress"),
           body: {
             "sellerId": mockUserId,
-            "dailySalesProgression": mockSales.toString(),
+            "dailySalesProgression": (mockTotal + mockSales).toString(),
           },
           headers: {
             "x-access-token": mockAuthToken
@@ -76,7 +79,6 @@ void main() {
         "shopId": mockShopId,
         "total": mockTotal.toString(),
         "dateTime": mockDateTime.toIso8601String(),
-        "dailySalesProgression": mockSales.toString(),
         "isOnline": mockIsOnline.toString(),
         "transactions": jsonEncode(mockTransaction),
       }, headers: {
@@ -95,7 +97,7 @@ void main() {
           Uri.parse("$SERVER_IP/api/task/salesperson/updateSalesProgress"),
           body: {
             "sellerId": mockUserId,
-            "dailySalesProgression": (mockSales + mockTotal).toString(),
+            "dailySalesProgression": (mockSales + mockTotal * 2).toString(),
           },
           headers: {
             "x-access-token": mockAuthToken
@@ -107,7 +109,6 @@ void main() {
         "shopId": mockShopId,
         "total": mockTotal.toString(),
         "dateTime": mockDateTime.toIso8601String(),
-        "dailySalesProgression": (mockSales + mockTotal).toString(),
         "isOnline": mockIsOnline.toString(),
         "transactions": jsonEncode(mockTransaction),
       }, headers: {

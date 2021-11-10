@@ -40,6 +40,13 @@ class AuthScreen extends StatelessWidget {
                   flex: deviceSize.width > 600 ? 2 : 1,
                   child: AuthCard(),
                 ),
+                Text(
+                  "Technical Support : 011-1111111",
+                  style: TextStyle(color: Colors.white),
+                ),
+                Text(
+                    "Disclaimer : Your Location will be tracked after you loogged in.",
+                    style: TextStyle(color: Colors.white)),
               ],
             ),
           ),
@@ -92,8 +99,8 @@ class _AuthCardState extends State<AuthCard> {
       _isLoading = true;
     });
     try {
-      await Provider.of<Auth>(context, listen: false).signin(
-          _authData["email"] as String, _authData["password"] as String);
+      // await Provider.of<Auth>(context, listen: false).signin(
+      //     _authData["email"] as String, _authData["password"] as String);
     } catch (error) {
       print(error);
       var errorMessage = "Authenticate Faild. Please try again";

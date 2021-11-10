@@ -37,7 +37,7 @@ class _TabScreenState extends State<TabScreen> {
       appBar: AppBar(
         title: const Text("Smart POS"),
       ),
-      drawer: MainDrawer(),
+      drawer: MainDrawer(Key("drawer")),
       body: _screens[_selectedScreenIndex]["page"] as Widget,
       bottomNavigationBar: BottomNavigationBar(
         key: Key('bottom'),

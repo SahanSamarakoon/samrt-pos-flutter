@@ -24,11 +24,11 @@ class ShopsProvider with ChangeNotifier {
   final String? userId;
   final String? authToken;
   final String? serverIp;
-  http.Client client;
+  // http.Client client;
 
-  // ShopsProvider(this.serverIp, this.userId, this.authToken, this._items);
-  ShopsProvider(
-      this.serverIp, this.userId, this.authToken, this._items, this.client);
+  ShopsProvider(this.serverIp, this.userId, this.authToken, this._items);
+  // ShopsProvider(
+  //     this.serverIp, this.userId, this.authToken, this._items, this.client);
 
   void fetchAndSetShops(List<dynamic> extractedData) {
     final List<ShopItem> loadedShops = [];
@@ -51,12 +51,13 @@ class ShopsProvider with ChangeNotifier {
     return [..._items];
   }
 
-  // Future<void> checkShop(
-  //     String shopId, String sellerId, http.Client client) async {
-  Future<void> checkShop(String shopId, String sellerId) async {
+  Future<void> checkShop(
+      String shopId, String sellerId, http.Client client) async {
+    // Future<void> checkShop(String shopId, String sellerId) async {
     final shopIndex = _items.indexWhere((shop) => shop.id == shopId);
     final response = await client.patch
-        // final response = await http.patch
+        // final response = await http
+        //     .patch
         (Uri.parse("$serverIp/api/task/salesperson/checkShop"), body: {
       "sellerId": userId,
       "shopIndex": shopIndex.toString(),

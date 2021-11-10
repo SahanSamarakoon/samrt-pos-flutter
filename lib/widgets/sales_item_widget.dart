@@ -18,6 +18,7 @@ class _SalesItemState extends State<SalesItem> {
   @override
   Widget build(BuildContext context) {
     return Card(
+      key: Key('card'),
       margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
       child: Column(
         children: [
@@ -25,6 +26,7 @@ class _SalesItemState extends State<SalesItem> {
             padding: const EdgeInsets.symmetric(vertical: 15),
             child: ListTile(
               title: Text("Invoice ID - ${widget.payment.id}",
+                  key: Key('idText'),
                   style: const TextStyle(fontWeight: FontWeight.bold)),
               subtitle: Column(
                 children: [
@@ -41,6 +43,23 @@ class _SalesItemState extends State<SalesItem> {
                         ),
                         const Spacer(),
                         Chip(
+                          key: Key('onlineChip'),
+                          label: Text(
+                            widget.payment.isOnline
+                                ? "Online Payment"
+                                : "By Hand Payment",
+                            style: const TextStyle(
+                                fontSize: 12,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          backgroundColor: widget.payment.isOnline
+                              ? Colors.green
+                              : Colors.amber,
+                        ),
+                        const Spacer(),
+                        Chip(
+                          key: Key('chip'),
                           label: Text(
                             formatter.format(widget.payment.total) + " LKR",
                             style: const TextStyle(
@@ -55,6 +74,7 @@ class _SalesItemState extends State<SalesItem> {
                 ],
               ),
               trailing: IconButton(
+                key: Key('expandButton'),
                 icon: Icon(_expanded ? Icons.expand_less : Icons.expand_more),
                 onPressed: () {
                   setState(() {
@@ -66,9 +86,11 @@ class _SalesItemState extends State<SalesItem> {
           ),
           if (_expanded)
             Container(
+              width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 4),
               height: max(widget.payment.transactions.length * 75, 125),
               child: DataTable(
+                key: Key('dataTable'),
                 showBottomBorder: true,
                 dividerThickness: 3,
                 columnSpacing: 4,
@@ -101,7 +123,7 @@ class _SalesItemState extends State<SalesItem> {
                     label: Text(''),
                   ),
                   DataColumn(
-                      label: Text('Quantity',
+                      label: Text('Qnt',
                           style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
@@ -149,25 +171,6 @@ class _SalesItemState extends State<SalesItem> {
                         )))
                     .toList(),
               ),
-              // child: ListView(
-              //   children: widget.payment.transactions
-              //       .map((product) => Row(
-              //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //             children: [
-              //               Text(
-              //                 "Product ID - ${product["id"]}",
-              //                 style: const TextStyle(
-              //                     fontSize: 12, fontWeight: FontWeight.bold),
-              //               ),
-              //               Text(
-              //                 "${product["quantity"]}x",
-              //                 style: const TextStyle(
-              //                     fontSize: 15, color: Colors.grey),
-              //               )
-              //             ],
-              //           ))
-              //       .toList(),
-              // ),
             )
         ],
       ),

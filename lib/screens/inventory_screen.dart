@@ -25,7 +25,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
             const Padding(
               padding: EdgeInsets.all(10),
               child: Text(
-                'Inventory',
+                'Inventory in Hand',
                 style: TextStyle(
                   fontSize: 25,
                   fontWeight: FontWeight.bold,

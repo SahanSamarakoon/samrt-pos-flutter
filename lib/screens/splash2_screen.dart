@@ -19,17 +19,17 @@ class Splash extends StatefulWidget {
 class _SplashState extends State<Splash> {
   Future<Widget> loadFromFuture() async {
     try {
-      await Provider.of<SalesPersonProvider>(context, listen: false)
-          .fetchAndSetSalesperson();
+      // await Provider.of<SalesPersonProvider>(context, listen: false)
+      //     .fetchAndSetSalesperson();
       final seller =
           Provider.of<SalesPersonProvider>(context, listen: false).person;
       Provider.of<ShopsProvider>(context, listen: false)
           .fetchAndSetShops(seller!.dailyShops);
       Provider.of<ItemsProvider>(context, listen: false)
           .fetchAndSetItems(seller.dailyInventory);
-      Provider.of<PaymentsProvider>(context, listen: false)
-          .fetchAndSetPayments(seller.dailySalesProgression);
-      // Provider.of<LocationUpdate>(context, listen: false).autoUpdate();
+      // Provider.of<PaymentsProvider>(context, listen: false)
+      //     .fetchAndSetPayments(seller.dailySalesProgression);
+      Provider.of<LocationUpdate>(context, listen: false).autoUpdate();
       return Future.value(new TabScreen());
     } catch (error) {
       print(error);

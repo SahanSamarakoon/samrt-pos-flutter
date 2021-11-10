@@ -64,16 +64,24 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
                                   fontWeight: FontWeight.bold,
                                   fontSize: 20,
                                   color: Theme.of(context).colorScheme.primary),
+                              key: Key("titleText"),
                             ),
                             const Divider(),
-                            Text(shop.cp,
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 15)),
-                            Text(shop.address),
+                            Text(
+                              shop.cp,
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 15),
+                              key: Key("cpText"),
+                            ),
+                            Text(
+                              shop.address,
+                              key: Key("addText"),
+                            ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 IconButton(
+                                  key: Key("phoneIcon"),
                                   icon: const Icon(Icons.phone),
                                   color: Theme.of(context).colorScheme.primary,
                                   onPressed: () {

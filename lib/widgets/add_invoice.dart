@@ -71,7 +71,6 @@ class _AddToInvoiceState extends State<AddToInvoice> {
                   child: Text("Choose Item"),
                 ),
                 Container(
-                  width: 250,
                   child: DropdownButtonFormField(
                     value: _selectedValue,
                     isExpanded: true,
@@ -100,11 +99,41 @@ class _AddToInvoiceState extends State<AddToInvoice> {
                     }).toList(),
                   ),
                 ),
+                Row(
+                  children: [
+                    const Padding(
+                      padding: const EdgeInsets.only(top: 15),
+                      child: Text("Item Name",
+                          style: const TextStyle(fontWeight: FontWeight.bold)),
+                    ),
+                    Spacer(),
+                    const Padding(
+                      padding: const EdgeInsets.only(top: 15),
+                      child: Text("Item Price",
+                          style: const TextStyle(fontWeight: FontWeight.bold)),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      _selectedValue.name,
+                      key: Key("nameField"),
+                    ),
+                    Spacer(),
+                    Text(
+                      _selectedValue.price.toString(),
+                      key: Key("priceField"),
+                    ),
+                  ],
+                ),
                 const Padding(
                   padding: const EdgeInsets.only(top: 15),
                   child: Text("Quantity"),
                 ),
                 TextFormField(
+                  key: Key("qntField"),
                   decoration:
                       InputDecoration(contentPadding: const EdgeInsets.all(10)),
                   initialValue: "1",
@@ -138,6 +167,7 @@ class _AddToInvoiceState extends State<AddToInvoice> {
                   height: 20,
                 ),
                 ElevatedButton(
+                  key: Key("addButton"),
                   style: ElevatedButton.styleFrom(
                     primary: Theme.of(context).colorScheme.primary,
                   ),

@@ -12,6 +12,7 @@ class Payment {
   final List<Map> transactions;
   final double total;
   final String dateTime;
+  final bool isOnline;
   Payment(
       {required this.id,
       required this.sellerId,
@@ -19,7 +20,8 @@ class Payment {
       required this.shopName,
       required this.transactions,
       required this.total,
-      required this.dateTime});
+      required this.dateTime,
+      required this.isOnline});
 }
 
 class PaymentsProvider with ChangeNotifier {
@@ -28,19 +30,19 @@ class PaymentsProvider with ChangeNotifier {
   final String? authToken;
   final String? serverIp;
   List<Payment> _payments = [];
-  http.Client client;
+  // http.Client client;
 
-  // PaymentsProvider(this.serverIp, this.userId, this.authToken, this._payments);
-  PaymentsProvider(
-      this.serverIp, this.userId, this.authToken, this._payments, this.client);
+  PaymentsProvider(this.serverIp, this.userId, this.authToken, this._payments);
+  // PaymentsProvider(
+  //     this.serverIp, this.userId, this.authToken, this._payments, this.client);
 
   List<Payment> get payments {
     return [..._payments.reversed];
   }
 
-  // Future<void> fetchAndSetPayments(
-  //     double extractedData, http.Client client) async {
-  Future<void> fetchAndSetPayments(double extractedData) async {
+  Future<void> fetchAndSetPayments(
+      double extractedData, http.Client client) async {
+    // Future<void> fetchAndSetPayments(double extractedData) async {
     _payments = [];
     sales = extractedData;
     // final response = await http.post
@@ -61,6 +63,7 @@ class PaymentsProvider with ChangeNotifier {
           shopName: payment["shopId"]["shopName"].toString(),
           total: payment["total"].toDouble(),
           dateTime: payment["dateTime"].toString(),
+          isOnline: payment["isOnline"],
           transactions: (payment["transactions"] as List<dynamic>)
               .map((transaction) => transaction as Map)
               .toList(),
@@ -73,27 +76,27 @@ class PaymentsProvider with ChangeNotifier {
   }
 
 // DateTime mockDateTime
-  // Future<void> addPayment(
-  //     String sellerId,
-  //     String shopId,
-  //     List<Map> transaction,
-  //     double total,
-  //     bool isOnline,
-  //     http.Client client,
-  //     DateTime mockDateTime) async {
   Future<void> addPayment(
-    String sellerId,
-    String shopId,
-    List<Map> transaction,
-    double total,
-    bool isOnline,
-  ) async {
+      String sellerId,
+      String shopId,
+      List<Map> transaction,
+      double total,
+      bool isOnline,
+      http.Client client,
+      DateTime mockDateTime) async {
+    // Future<void> addPayment(
+    //   String sellerId,
+    //   String shopId,
+    //   List<Map> transaction,
+    //   double total,
+    //   bool isOnline,
+    // ) async {
     // final responseSalesProgress = await http.patch(
     final responseSalesProgress = await client.patch(
         Uri.parse("$serverIp/api/task/salesperson/updateSalesProgress"),
         body: {
           "sellerId": userId,
-          "dailySalesProgression": sales.toString(),
+          "dailySalesProgression": (sales + total).toString(),
         },
         headers: {
           "x-access-token": authToken as String
@@ -105,9 +108,8 @@ class PaymentsProvider with ChangeNotifier {
       "sellerId": userId,
       "shopId": shopId,
       "total": total.toString(),
-      // "dateTime": mockDateTime.toIso8601String(),
-      "dateTime": DateTime.now().toIso8601String(),
-      "dailySalesProgression": sales.toString(),
+      "dateTime": mockDateTime.toIso8601String(),
+      // "dateTime": DateTime.now().toIso8601String(),
       "isOnline": isOnline.toString(),
       "transactions": jsonEncode(transaction),
     }, headers: {
@@ -117,7 +119,7 @@ class PaymentsProvider with ChangeNotifier {
     if (responseSalesProgress.statusCode == 200 ||
         responsePayment.statusCode == 200) {
       sales += total;
-      await fetchAndSetPayments(sales);
+      // await fetchAndSetPayments(sales);
       notifyListeners();
     } else {
       throw Exception('Failed - Add Payments || SalesProgress');
@@ -126,5 +128,15 @@ class PaymentsProvider with ChangeNotifier {
 
   double dailySales() {
     return sales;
+  }
+
+  double moneyInTheHand() {
+    double money = 0.0;
+    _payments.forEach((element) {
+      if (element.isOnline == false) {
+        money += element.total;
+      }
+    });
+    return money;
   }
 }

@@ -71,7 +71,6 @@ class _AddToInvoiceState extends State<AddToInvoice> {
                   child: Text("Choose Item"),
                 ),
                 Container(
-                  width: 250,
                   child: DropdownButtonFormField(
                     value: _selectedValue,
                     isExpanded: true,
@@ -100,11 +99,52 @@ class _AddToInvoiceState extends State<AddToInvoice> {
                     }).toList(),
                   ),
                 ),
+                Row(
+                  children: [
+                    const Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 15, horizontal: 20),
+                      child: Text("Item Name",
+                          key: Key("nameText"),
+                          style: const TextStyle(fontWeight: FontWeight.bold)),
+                    ),
+                    Spacer(),
+                    const Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 15, horizontal: 20),
+                      child: Text("Item Price",
+                          key: Key("priceText"),
+                          style: const TextStyle(fontWeight: FontWeight.bold)),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 0, horizontal: 20),
+                      child: Text(
+                        _selectedValue.name,
+                        key: Key("nameField"),
+                      ),
+                    ),
+                    Spacer(),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 0, horizontal: 20),
+                      child: Text(
+                        _selectedValue.price.toString(),
+                        key: Key("priceField"),
+                      ),
+                    ),
+                  ],
+                ),
                 const Padding(
                   padding: const EdgeInsets.only(top: 15),
                   child: Text("Quantity"),
                 ),
                 TextFormField(
+                  key: Key("qntField"),
                   decoration:
                       InputDecoration(contentPadding: const EdgeInsets.all(10)),
                   initialValue: "1",
@@ -138,6 +178,7 @@ class _AddToInvoiceState extends State<AddToInvoice> {
                   height: 20,
                 ),
                 ElevatedButton(
+                  key: Key("addButton"),
                   style: ElevatedButton.styleFrom(
                     primary: Theme.of(context).colorScheme.primary,
                   ),

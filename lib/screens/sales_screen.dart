@@ -15,13 +15,12 @@ class SalesScreen extends StatefulWidget {
 
 class _SalesScreenState extends State<SalesScreen> {
   @override
-  void initState() {
-    final seller =
-        Provider.of<SalesPersonProvider>(context, listen: false).person;
-    Provider.of<PaymentsProvider>(context, listen: false)
-        .fetchAndSetPayments(seller!.dailySalesProgression);
-    super.initState();
-  }
+  // void initState() {
+  //   final dailysales = Provider.of<PaymentsProvider>(context).dailySales();
+  //   Provider.of<PaymentsProvider>(context, listen: false)
+  //       .fetchAndSetPayments(dailysales);
+  //   super.initState();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -32,35 +31,63 @@ class _SalesScreenState extends State<SalesScreen> {
       appBar: AppBar(
         title: const Text("Daily Sales Information"),
       ),
-      drawer: MainDrawer(),
+      drawer: MainDrawer(Key("drawer")),
       body: Column(children: [
         Card(
           margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  const Text(
-                    "Total Daily Sales",
-                    style: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  const Spacer(),
-                  Chip(
-                    label: Text(
-                      formatter.format(paymentData.dailySales()) + " LKR",
+            child: Column(children: [
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    const Text(
+                      "Total Daily Sales",
+                      key: Key('totalText'),
                       style: const TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold),
+                          fontSize: 18, fontWeight: FontWeight.bold),
                     ),
-                    backgroundColor: Theme.of(context).colorScheme.primary,
-                  ),
-                ]),
+                    const Spacer(),
+                    Chip(
+                      key: Key('totalAmount'),
+                      label: Text(
+                        formatter.format(paymentData.dailySales()) + " LKR",
+                        style: const TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),
+                      ),
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                    ),
+                  ]),
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    const Text(
+                      "Money In the Hand",
+                      key: Key('inTheHandMoneyText'),
+                      style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          fontStyle: FontStyle.italic),
+                    ),
+                    const Spacer(),
+                    Chip(
+                      key: Key('totalMoney'),
+                      label: Text(
+                        formatter.format(paymentData.moneyInTheHand()) + " LKR",
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12),
+                      ),
+                      backgroundColor: Colors.amber,
+                    ),
+                  ]),
+            ]),
           ),
         ),
         Container(
           width: double.infinity,
-          height: (mediaQuery.size.height - mediaQuery.padding.top) * 0.725,
+          height: (mediaQuery.size.height - mediaQuery.padding.top) * 0.675,
           child: ListView.builder(
             itemBuilder: (ctx, index) =>
                 SalesItem(index, paymentData.payments[index]),

@@ -40,6 +40,21 @@ class AuthScreen extends StatelessWidget {
                   flex: deviceSize.width > 600 ? 2 : 1,
                   child: AuthCard(),
                 ),
+                Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Text(
+                    "Technical Support : 011-1111111",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Text(
+                    "Disclaimer : Your Location will be continuously tracked after you loogged in.",
+                    style: TextStyle(color: Colors.white),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
               ],
             ),
           ),

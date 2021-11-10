@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_pos/middleware/auth.dart';
@@ -6,6 +8,8 @@ import 'package:smart_pos/screens/sales_screen.dart';
 import 'package:smart_pos/screens/tabs_screen.dart';
 
 class MainDrawer extends StatelessWidget {
+  Key key;
+  MainDrawer(this.key);
   @override
   Widget build(BuildContext context) {
     final seller =
@@ -21,6 +25,7 @@ class MainDrawer extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.home),
             title: const Text("Home"),
+            key: Key('home'),
             onTap: () {
               Navigator.of(context).popAndPushNamed(TabScreen.routeName);
               // Navigator.of(context).pushReplacementNamed("/");
@@ -30,6 +35,7 @@ class MainDrawer extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.money),
             title: const Text("Sales"),
+            key: Key('sales'),
             onTap: () {
               Navigator.of(context).popAndPushNamed(SalesScreen.routeName);
             },
@@ -38,6 +44,7 @@ class MainDrawer extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.logout),
             title: const Text("Logout"),
+            key: Key('logout'),
             onTap: () {
               Provider.of<Auth>(context, listen: false).logout();
               Navigator.of(context).pop();

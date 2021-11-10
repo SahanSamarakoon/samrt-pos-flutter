@@ -12,6 +12,7 @@ class Payment {
   final List<Map> transactions;
   final double total;
   final String dateTime;
+  final bool isOnline;
   Payment(
       {required this.id,
       required this.sellerId,
@@ -19,7 +20,8 @@ class Payment {
       required this.shopName,
       required this.transactions,
       required this.total,
-      required this.dateTime});
+      required this.dateTime,
+      required this.isOnline});
 }
 
 class PaymentsProvider with ChangeNotifier {
@@ -61,6 +63,7 @@ class PaymentsProvider with ChangeNotifier {
           shopName: payment["shopId"]["shopName"].toString(),
           total: payment["total"].toDouble(),
           dateTime: payment["dateTime"].toString(),
+          isOnline: payment["isOnline"],
           transactions: (payment["transactions"] as List<dynamic>)
               .map((transaction) => transaction as Map)
               .toList(),
@@ -107,7 +110,6 @@ class PaymentsProvider with ChangeNotifier {
       "total": total.toString(),
       // "dateTime": mockDateTime.toIso8601String(),
       "dateTime": DateTime.now().toIso8601String(),
-      "dailySalesProgression": sales.toString(),
       "isOnline": isOnline.toString(),
       "transactions": jsonEncode(transaction),
     }, headers: {
@@ -126,5 +128,15 @@ class PaymentsProvider with ChangeNotifier {
 
   double dailySales() {
     return sales;
+  }
+
+  double moneyInTheHand() {
+    double money = 0.0;
+    _payments.forEach((element) {
+      if (element.isOnline == false) {
+        money += element.total;
+      }
+    });
+    return money;
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:smart_pos/middleware/auth.dart';
 import 'package:smart_pos/models/item.dart';
 import 'package:smart_pos/models/payment.dart';
 import 'package:smart_pos/models/salesperson.dart';
@@ -48,6 +49,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
       context: ctx,
       builder: (_) {
         return GestureDetector(
+          key: Key("modal"),
           onTap: () {},
           child: AddToInvoice(_addNewItem, initialItem),
           behavior: HitTestBehavior.opaque,
@@ -99,13 +101,33 @@ class _PaymentScreenState extends State<PaymentScreen> {
   }
 
   void _updateSalesperson(String shopId, String sellerId,
-      [bool isOnline = false]) {
-    Provider.of<ShopsProvider>(context, listen: false)
-        .checkShop(shopId, sellerId);
-    Provider.of<ItemsProvider>(context, listen: false)
-        .updateQuantity(widget.itemsToModify, sellerId);
-    Provider.of<PaymentsProvider>(context, listen: false)
-        .addPayment(sellerId, shopId, widget.itemsToModify, total, isOnline);
+      [bool isOnline = false]) async {
+    try {
+      Provider.of<ShopsProvider>(context, listen: false)
+          .checkShop(shopId, sellerId);
+      Provider.of<ItemsProvider>(context, listen: false)
+          .updateQuantity(widget.itemsToModify, sellerId);
+      Provider.of<PaymentsProvider>(context, listen: false)
+          .addPayment(sellerId, shopId, widget.itemsToModify, total, isOnline);
+    } catch (error) {
+      print(error);
+      await showDialog<Null>(
+          context: context,
+          builder: (ctx) => AlertDialog(
+                title: Text("Error connecting to the server"),
+                content: Text(
+                    "Please check your internet connectivity and try agin after few seconds."),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Provider.of<Auth>(context, listen: false).logout();
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pushReplacementNamed("/");
+                      },
+                      child: Text("OK"))
+                ],
+              ));
+    }
   }
 
   @override
@@ -123,6 +145,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
         title: const Text("Payment Invoice"),
         actions: [
           IconButton(
+              key: Key("addNewButton"),
               onPressed: () {
                 _startAddNewItem(
                     context,
@@ -144,6 +167,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                         fontSize: 25, fontWeight: FontWeight.bold)),
               ),
               DataTable(
+                key: Key("dataTable"),
                 showCheckboxColumn: false,
                 showBottomBorder: true,
                 dividerThickness: 3,
@@ -241,7 +265,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
                               color: Theme.of(context).colorScheme.secondary),
                         ),
                         const WidgetSpan(
-                          child: Icon(Icons.qr_code, size: 18),
+                          child: Icon(
+                            Icons.qr_code,
+                            size: 18,
+                            key: Key("qrButton"),
+                          ),
                         ),
                       ],
                     ),
@@ -257,6 +285,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     "Total : " + formatter.format(total) + " LKR",
+                    key: Key("total"),
                     style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -266,6 +295,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton(
+        key: Key("floatingButton"),
         foregroundColor: Theme.of(context).colorScheme.secondary,
         backgroundColor: Theme.of(context).colorScheme.primary,
         child: const Icon(Icons.check),
@@ -277,6 +307,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
               showDialog(
                   context: context,
                   builder: (ctx) => AlertDialog(
+                        key: Key("alertDialog"),
                         title: const Text("Confirm the Invoice",
                             style: TextStyle(color: Colors.black)),
                         content: const Text(

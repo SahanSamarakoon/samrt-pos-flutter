@@ -48,7 +48,7 @@ class MyApp extends StatelessWidget {
     final String mockRes =
         '{"id":"61671c22346f6b3724faef50","firstName":"Sahan","lastName":"Samarakoon","email":"sahan.samarakoon.4@gmail.com","roles":[],"accessToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxNjcxYzIyMzQ2ZjZiMzcyNGZhZWY1MCIsImlhdCI6MTYzNTA5NjE1OSwiZXhwIjoxNjM1MTgyNTU5fQ.74owcnXSzDqGTNBm_JAIW24aIEiDt7ZcxrK2LcyLP1M","expiresIn":"86400"}';
     final String mockPaymentList =
-        '[{"_id":"616da296d9f30137446e8548","sellerId":"61671c22346f6b3724faef50","shopId":{"_id":"61673501f10633a591268164","shopName":"A Store"},"total":550,"dateTime":"2021-10-23T16:36:37.850Z","transactions":[{"id":{"_id":"616874417a10179ca894e8fa","itemName":"A Item","unitPrice":100},"quantity":1},{"id":{"_id":"616874c07a10179ca894e8fb","itemName":"B Item","unitPrice":50},"quantity":1},{"id":{"_id":"616874e77a10179ca894e8fc","itemName":"C Item","unitPrice":150},"quantity":1},{"id":null,"quantity":1}],"isOnline":false,"__v":0}]';
+        '[{"_id":"616da296d9f30137446e8548","sellerId":"61671c22346f6b3724faef50","shopId":{"_id":"61673501f10633a591268164","shopName":"A Store"},"total":350,"dateTime":"2021-10-23T16:36:37.850Z","transactions":[{"id":{"_id":"616874417a10179ca894e8fa","itemName":"A Item","unitPrice":100},"quantity":1},{"id":{"_id":"616874c07a10179ca894e8fb","itemName":"B Item","unitPrice":50},"quantity":1},{"id":{"_id":"616874e77a10179ca894e8fc","itemName":"C Item","unitPrice":150},"quantity":1}],"isOnline":false,"__v":0}]';
     when(client.post(Uri.parse("$SERVER_IP/api/task/payments"),
             body: {"sellerId": mockUserId},
             headers: {"x-access-token": mockAuthToken}))

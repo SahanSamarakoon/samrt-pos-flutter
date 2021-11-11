@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_pos/middleware/auth.dart';
 import 'package:smart_pos/models/salesperson.dart';
+import 'package:smart_pos/screens/auth_screen.dart';
 import 'package:smart_pos/screens/sales_screen.dart';
 import 'package:smart_pos/screens/tabs_screen.dart';
 
@@ -47,8 +48,12 @@ class MainDrawer extends StatelessWidget {
             key: Key('logout'),
             onTap: () {
               Provider.of<Auth>(context, listen: false).logout();
-              Navigator.of(context).pop();
-              Navigator.of(context).pushReplacementNamed("/");
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) => AuthScreen()),
+                ModalRoute.withName('/'),
+              );
             },
           ),
         ],

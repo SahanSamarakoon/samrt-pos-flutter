@@ -91,7 +91,12 @@ class _AuthCardState extends State<AuthCard> {
               actions: [
                 TextButton(
                     onPressed: () {
-                      Navigator.of(ctx).pop();
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) => AuthScreen()),
+                        ModalRoute.withName('/'),
+                      );
                     },
                     child: Text("OK"))
               ],

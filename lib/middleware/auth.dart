@@ -15,7 +15,7 @@ class Auth with ChangeNotifier {
 
   Auth();
 
-  final SERVER_IP = 'http://10.0.2.2:3001';
+  final SERVER_IP = 'https://smart-pos-app.herokuapp.com';
   final storage = FlutterSecureStorage();
 
   bool get isAuth {

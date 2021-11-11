@@ -116,13 +116,13 @@ class _AddToInvoiceState extends State<AddToInvoice> {
                       return "Please enter a quantity";
                     }
                     if (int.tryParse(value) == null) {
-                      return "Please enter a valid number";
+                      return "Please enter a valid whole number";
                     }
                     if (int.parse(value) <= 0) {
                       return "Please enter a valid number greater than 0";
                     }
                     if (int.parse(value) > remainingQnt) {
-                      return "Please enter a lower or same number as\nremaining stock in the inventory\nRemaing stock:$remainingQnt ";
+                      return "Please enter a lower or same number as\nremaining stock in the inventory.\nRemaing stock: $remainingQnt ";
                     }
                     return null;
                   },

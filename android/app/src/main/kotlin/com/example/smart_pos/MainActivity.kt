@@ -1,4 +1,4 @@
-package com.example.smart_pos
+package com.smartpos.smart_pos_salesperson
 
 import io.flutter.embedding.android.FlutterActivity
 

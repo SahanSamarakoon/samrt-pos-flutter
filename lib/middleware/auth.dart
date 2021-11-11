@@ -44,28 +44,33 @@ class Auth with ChangeNotifier {
     if (response.statusCode == 200) {
       final responseData = json.decode(response.body);
       print("Auth Succes");
-      _token = responseData["accessToken"];
-      _userId = responseData["id"];
-      _expiryDate = DateTime.now()
-          .add(Duration(seconds: int.parse(responseData["expiresIn"])));
-      _autoLogout();
-      notifyListeners();
-      final userData = json.encode(
-        {
-          'accessToken': _token,
-          'id': _userId,
-          'expiresIn': _expiryDate!.toIso8601String(),
-        },
-      );
-      await storage.write(
-          key: "jwtData",
-          value: userData); //Should comment this line for unit testing
+      var rolesList = responseData["roles"] as List<dynamic>;
+      if (rolesList.contains("ROLE_SALESPERSON")) {
+        _token = responseData["accessToken"];
+        _userId = responseData["id"];
+        _expiryDate = DateTime.now()
+            .add(Duration(seconds: int.parse(responseData["expiresIn"])));
+        _autoLogout();
+        notifyListeners();
+        final userData = json.encode(
+          {
+            'accessToken': _token,
+            'id': _userId,
+            'expiresIn': _expiryDate!.toIso8601String(),
+          },
+        );
+        await storage.write(
+            key: "jwtData",
+            value: userData); //Should comment this line for unit testing
+      } else {
+        throw Exception('Use a Salesperson Account to login');
+      }
     } else if (response.statusCode == 404) {
-      throw Exception('Failed - Wrong Email');
+      throw Exception('Incorrect Email');
     } else if (response.statusCode == 401) {
-      throw Exception('Failed - Wrong Password');
+      throw Exception('Wrong Password');
     } else {
-      throw Exception('Failed - Auth');
+      throw Exception('Auth');
     }
   }
 

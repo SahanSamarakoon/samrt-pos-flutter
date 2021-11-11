@@ -20,7 +20,8 @@ class _SplashState extends State<Splash> {
   Future<Widget> loadFromFuture() async {
     try {
       await Provider.of<SalesPersonProvider>(context, listen: false)
-          .fetchAndSetSalesperson();
+          .fetchAndSetSalesperson()
+          .timeout(const Duration(seconds: 15));
       final seller =
           Provider.of<SalesPersonProvider>(context, listen: false).person;
       Provider.of<ShopsProvider>(context, listen: false)

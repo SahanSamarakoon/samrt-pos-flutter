@@ -94,7 +94,11 @@ class ItemsProvider with ChangeNotifier {
   }
 
   Item findById(String itemId) {
-    return _items.firstWhere((item) => item.id == itemId);
+    try {
+      return _items.firstWhere((item) => item.id == itemId);
+    } catch (error) {
+      throw new Exception("No item found");
+    }
   }
 
   int getItemReamingQnt(String itemId) {

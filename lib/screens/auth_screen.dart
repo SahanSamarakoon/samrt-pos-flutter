@@ -107,11 +107,12 @@ class _AuthCardState extends State<AuthCard> {
       _isLoading = true;
     });
     try {
-      await Provider.of<Auth>(context, listen: false).signin(
-          _authData["email"] as String, _authData["password"] as String);
+      await Provider.of<Auth>(context, listen: false)
+          .signin(_authData["email"] as String, _authData["password"] as String)
+          .timeout(const Duration(seconds: 15));
     } catch (error) {
       print(error);
-      var errorMessage = "Authenticate Faild. Please try again";
+      var errorMessage = "$error. Please try again. ";
       _showErrorDialog(errorMessage);
       setState(() {
         _isLoading = false;
@@ -142,7 +143,9 @@ class _AuthCardState extends State<AuthCard> {
                       icon: Icon(Icons.email), label: Text("Email")),
                   keyboardType: TextInputType.emailAddress,
                   validator: (value) {
-                    if (value!.isEmpty || !value.contains('@')) {
+                    if (value!.isEmpty ||
+                        !value.contains('@') ||
+                        !value.contains('.')) {
                       return 'Invalid email!';
                     }
                     return null;

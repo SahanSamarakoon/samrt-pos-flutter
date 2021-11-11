@@ -39,6 +39,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final client = MockClient();
+    // ignore: non_constant_identifier_names
     final SERVER_IP = 'http://10.0.2.2:3001';
     final String mockUserId = "61671c22346f6b3724faef50";
     final mockAuthToken =

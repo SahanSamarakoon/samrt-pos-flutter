@@ -1,3 +1,5 @@
+// ignore_for_file: import_of_legacy_library_into_null_safe
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
@@ -76,6 +78,13 @@ void main() {
       expect(shopsProgression, findsOneWidget);
       expect(inventoryProgression, findsOneWidget);
       print("Components of Dashboard Screen Loaded Correctly");
+
+      await tester.tap(showRouteButton);
+      await tester.pumpAndSettle(Duration(seconds: 1));
+      print("Navigated to Map Screen Correctly");
+      final Finder map = find.byKey(Key('map'));
+      expect(map, findsOneWidget);
+      print("Components of  Map Screen Loaded Correctly");
     });
   });
 
@@ -103,65 +112,6 @@ void main() {
       expect(priceColum, findsOneWidget);
       expect(qntColum, findsOneWidget);
       print("Components of Inventory Screen Loaded Correctly");
-    });
-  });
-
-  group('Integration Test - Drawer/ Payment Screen', () {
-    testWidgets('Drawer/ Payment Screen UI/Navigation',
-        (WidgetTester tester) async {
-      await tester.pumpWidget(MyApp());
-      await tester.pumpAndSettle(Duration(seconds: 1));
-      //Tabs Screen
-      final Finder drawer = find.byKey(Key('drawer'));
-      await tester.dragFrom(
-          tester.getTopLeft(find.byType(MaterialApp)), Offset(300, 0));
-      await tester.pumpAndSettle(Duration(seconds: 1));
-      expect(drawer, findsOneWidget);
-      print("Opened Drawer Correctly");
-
-      //Testing Drawer
-      final Finder home = find.byKey(Key('home'));
-      final Finder sales = find.byKey(Key('sales'));
-      final Finder logout = find.byKey(Key('logout'));
-      expect(home, findsOneWidget);
-      expect(sales, findsOneWidget);
-      expect(logout, findsOneWidget);
-      print("Components of Drawer Loaded Correctly");
-
-      await tester.tap(sales);
-      await tester.pumpAndSettle(Duration(seconds: 1));
-      print("Navigated to Payments Screen Correctly");
-
-      //Sales Screen
-      final Finder totalText = find.byKey(Key('totalText'));
-      final Finder totalAmount = find.byKey(Key('totalAmount'));
-      final Finder inTheHandMoneyText = find.byKey(Key('inTheHandMoneyText'));
-      final Finder totalMoney = find.byKey(Key('totalMoney'));
-      final Finder salesItem = find.byType(SalesItem);
-      expect(totalText, findsOneWidget);
-      expect(totalAmount, findsOneWidget);
-      expect(inTheHandMoneyText, findsOneWidget);
-      expect(totalMoney, findsOneWidget);
-      expect(salesItem, findsOneWidget);
-      print("Components of Sales Screen Loaded Correctly");
-
-      //Inovice
-      final Finder card = find.byKey(Key('card'));
-      final Finder idText = find.byKey(Key('idText'));
-      final Finder chip = find.byKey(Key("chip"));
-      final Finder onlineChip = find.byKey(Key("onlineChip"));
-      final Finder expandButton = find.byKey(Key("expandButton"));
-      expect(card, findsOneWidget);
-      expect(idText, findsOneWidget);
-      expect(onlineChip, findsOneWidget);
-      expect(chip, findsOneWidget);
-      expect(expandButton, findsOneWidget);
-      await tester.tap(expandButton);
-      await tester.pumpAndSettle(Duration(seconds: 1));
-
-      final Finder dataTable = find.byKey(Key("dataTable"));
-      expect(dataTable, findsOneWidget);
-      print("Components of Mock Invoice Loaded Correctly");
     });
   });
 
@@ -252,6 +202,64 @@ void main() {
       final Finder alertDialog = find.byKey(Key('alertDialog'));
       expect(alertDialog, findsOneWidget);
       print("Mock Payemnt UI Components Working Correctly");
+    });
+  });
+  group('Integration Test - Drawer/ Payment Screen', () {
+    testWidgets('Drawer/ Payment Screen UI/Navigation',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(MyApp());
+      await tester.pumpAndSettle(Duration(seconds: 1));
+      //Tabs Screen
+      final Finder drawer = find.byKey(Key('drawer'));
+      await tester.dragFrom(
+          tester.getTopLeft(find.byType(MaterialApp)), Offset(300, 0));
+      await tester.pumpAndSettle(Duration(seconds: 1));
+      expect(drawer, findsOneWidget);
+      print("Opened Drawer Correctly");
+
+      //Testing Drawer
+      final Finder home = find.byKey(Key('home'));
+      final Finder sales = find.byKey(Key('sales'));
+      final Finder logout = find.byKey(Key('logout'));
+      expect(home, findsOneWidget);
+      expect(sales, findsOneWidget);
+      expect(logout, findsOneWidget);
+      print("Components of Drawer Loaded Correctly");
+
+      await tester.tap(sales);
+      await tester.pumpAndSettle(Duration(seconds: 1));
+      print("Navigated to Payments Screen Correctly");
+
+      //Sales Screen
+      final Finder totalText = find.byKey(Key('totalText'));
+      final Finder totalAmount = find.byKey(Key('totalAmount'));
+      final Finder inTheHandMoneyText = find.byKey(Key('inTheHandMoneyText'));
+      final Finder totalMoney = find.byKey(Key('totalMoney'));
+      final Finder salesItem = find.byType(SalesItem);
+      expect(totalText, findsOneWidget);
+      expect(totalAmount, findsOneWidget);
+      expect(inTheHandMoneyText, findsOneWidget);
+      expect(totalMoney, findsOneWidget);
+      expect(salesItem, findsOneWidget);
+      print("Components of Sales Screen Loaded Correctly");
+
+      //Inovice
+      final Finder card = find.byKey(Key('card'));
+      final Finder idText = find.byKey(Key('idText'));
+      final Finder chip = find.byKey(Key("chip"));
+      final Finder onlineChip = find.byKey(Key("onlineChip"));
+      final Finder expandButton = find.byKey(Key("expandButton"));
+      expect(card, findsOneWidget);
+      expect(idText, findsOneWidget);
+      expect(onlineChip, findsOneWidget);
+      expect(chip, findsOneWidget);
+      expect(expandButton, findsOneWidget);
+      await tester.tap(expandButton);
+      await tester.pumpAndSettle(Duration(seconds: 1));
+
+      final Finder dataTable = find.byKey(Key("dataTable"));
+      expect(dataTable, findsOneWidget);
+      print("Components of Mock Invoice Loaded Correctly");
     });
   });
 }

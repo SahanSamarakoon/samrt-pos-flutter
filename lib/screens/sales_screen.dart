@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:smart_pos/models/payment.dart';
-import 'package:smart_pos/models/salesperson.dart';
 import 'package:smart_pos/widgets/main_drawer.dart';
 import 'package:smart_pos/widgets/sales_item_widget.dart';
 

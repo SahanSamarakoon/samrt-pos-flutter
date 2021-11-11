@@ -2,7 +2,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_pos/middleware/auth.dart';
-import 'package:smart_pos/middleware/locationUpdate.dart';
 import 'package:smart_pos/models/item.dart';
 import 'package:smart_pos/models/payment.dart';
 import 'package:smart_pos/models/salesperson.dart';

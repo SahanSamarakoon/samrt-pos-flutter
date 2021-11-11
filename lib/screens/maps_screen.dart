@@ -111,6 +111,7 @@ class _MapsScreenState extends State<MapsScreen> {
           title: const Text('Map'),
         ),
         body: GoogleMap(
+            key: Key("map"),
             myLocationButtonEnabled: true,
             myLocationEnabled: true,
             compassEnabled: true,

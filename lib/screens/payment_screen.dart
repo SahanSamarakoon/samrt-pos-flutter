@@ -20,7 +20,6 @@ class PaymentScreen extends StatefulWidget {
 class _PaymentScreenState extends State<PaymentScreen> {
   double total = 0;
   late Item qrItem;
-  var _isLoading = false;
 
   void setQrCode(String qr) {
     try {
@@ -82,8 +81,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
         });
       });
     }
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text("Added the Entry")));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text("Added the Entry"),
+      duration: const Duration(seconds: 3),
+    ));
   }
 
   void _removeItem(String itemIdToRemove) {
@@ -96,30 +97,25 @@ class _PaymentScreenState extends State<PaymentScreen> {
       widget.items.removeWhere((item) => item["id"] == itemIdToRemove);
       widget.itemsToModify.removeWhere((item) => item["id"] == itemIdToRemove);
     });
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text("Removed the Entry")));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text("Removed the Entry"),
+      duration: const Duration(seconds: 3),
+    ));
   }
 
   Future<void> _updateSalesperson(String shopId, String sellerId,
       [bool isOnline = false]) async {
-    setState(() {
-      _isLoading = true;
-    });
-    print(_isLoading.toString());
     try {
       await Provider.of<ShopsProvider>(context, listen: false)
           .checkShop(shopId, sellerId)
-          .timeout(const Duration(seconds: 3));
+          .timeout(const Duration(seconds: 10));
       await Provider.of<ItemsProvider>(context, listen: false)
           .updateQuantity(widget.itemsToModify, sellerId)
-          .timeout(const Duration(seconds: 3));
+          .timeout(const Duration(seconds: 10));
       await Provider.of<PaymentsProvider>(context, listen: false)
           .addPayment(sellerId, shopId, widget.itemsToModify, total, isOnline)
-          .timeout(const Duration(seconds: 3));
+          .timeout(const Duration(seconds: 10));
     } catch (error) {
-      setState(() {
-        _isLoading = false;
-      });
       print(error);
       await showDialog<Null>(
           context: context,
@@ -319,7 +315,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       title: const Text("Confirm the Invoice",
                           style: TextStyle(color: Colors.black)),
                       content: Container(
-                        height: 105,
+                        height: 115,
                         child: Column(
                           children: [
                             const Text(
@@ -331,12 +327,38 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   ElevatedButton(
-                                      onPressed: () {
-                                        _updateSalesperson(
-                                            shop.id, seller!.id, true);
+                                      onPressed: () async {
                                         Navigator.of(ctx).pop(true);
-                                        Navigator.of(ctx).pop();
-                                        Navigator.of(ctx).pop();
+                                        showDialog(
+                                          //prevent outside touch
+                                          barrierDismissible: false,
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            //prevent Back button press
+                                            return WillPopScope(
+                                              onWillPop: null,
+                                              child: AlertDialog(
+                                                backgroundColor:
+                                                    Colors.transparent,
+                                                elevation: 0,
+                                                content: Container(
+                                                  child: Center(
+                                                    child:
+                                                        CircularProgressIndicator(),
+                                                  ),
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        );
+                                        await _updateSalesperson(
+                                            shop.id, seller!.id, true);
+                                        Navigator.pop(context);
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                          content: Text("Issued the Invoice"),
+                                          duration: const Duration(seconds: 3),
+                                        ));
                                       },
                                       child: const Text("Pay Online")),
                                   ElevatedButton(
@@ -367,8 +389,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                         await _updateSalesperson(
                                             shop.id, seller!.id);
                                         Navigator.pop(context);
-                                        Navigator.of(ctx).pop();
-                                        Navigator.of(ctx).pop();
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                          content: Text("Issued the Invoice"),
+                                          duration: const Duration(seconds: 3),
+                                        ));
                                       },
                                       child: const Text("Pay by Hand"))
                                 ],
